@@ -1,0 +1,358 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+    /* Brand Colors - Warm Red for Lifestyle Vibe */
+    --primary: #D32F2F;
+    /* Deep Warm Red */
+    --primary-hover: #b71c1c;
+    --secondary: #1a1a1a;
+
+    /* Functional Colors */
+    --bg-body: #ffffff;
+    --bg-light: #f9f9f9;
+    --bg-dark: #111111;
+    --text-main: #333333;
+    --text-muted: #777777;
+    --border-light: #eeeeee;
+
+    /* Accents */
+    --success: #2e7d32;
+    --danger: #d32f2f;
+    --gold: #ffb74d;
+
+    /* Spacing */
+    --section-spacing: 80px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-main);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Utility Classes */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 82, 0, 0.3);
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge.veg {
+    background: #e6f7e9;
+    color: var(--success);
+}
+
+.badge.non-veg {
+    background: #feebeb;
+    color: var(--danger);
+}
+
+/* Layout Grid */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 32px;
+    padding: 20px 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    h1 {
+        font-size: 24px !important;
+    }
+
+    h2 {
+        font-size: 20px !important;
+    }
+
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    /* Make buttons smaller on mobile */
+    .btn-primary {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Admin Layout Styles */
+/* Admin Dashboard Redesign - Top Navbar Layout */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background: #fdfdfd;
+}
+
+.admin-sidebar {
+    width: 260px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: white;
+    border-right: 1px solid #eee;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.02);
+}
+
+.admin-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #666;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 12px 15px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.admin-nav-link:hover {
+    color: var(--primary);
+    background: rgba(211, 47, 47, 0.05);
+}
+
+.admin-nav-link.active {
+    color: white;
+    background: var(--primary);
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
+}
+
+.admin-sub-navbar {
+    background: white;
+    padding: 15px 30px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    gap: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+}
+
+.admin-sub-link {
+    font-size: 13px;
+    color: #888;
+    cursor: pointer;
+    padding: 6px 15px;
+    border-radius: 20px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.admin-sub-link:hover,
+.admin-sub-link.active {
+    background: var(--primary);
+    color: white;
+}
+
+.admin-main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.admin-main {
+    padding: 30px;
+    animation: fadeIn 0.5s ease;
+    width: 100%;
+}
+
+@media (max-width: 992px) {
+    .admin-sidebar {
+        width: 80px;
+        padding: 30px 10px;
+    }
+
+    .admin-nav-link span {
+        display: none;
+    }
+
+    .admin-sidebar .admin-logo-text {
+        display: none;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media print {
+    @page {
+        margin: 0;
+        size: auto;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    #printable-invoice,
+    #printable-invoice * {
+        visibility: visible;
+    }
+
+    #printable-invoice {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        background: white;
+    }
+
+    /* Hide the print icon itself during print */
+    .no-print {
+        display: none !important;
+    }
+}
