@@ -38,12 +38,16 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 body {
     background-color: var(--bg-body);
     color: var(--text-main);
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 h1,
@@ -176,6 +180,65 @@ h6 {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 32px;
     padding: 20px 0;
+}
+
+@media (max-width: 600px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+.flex-stack-mobile {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* Hero Section Buttons */
+.hero-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+
+.hero-btn {
+    padding: 18px 48px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    white-space: nowrap;
+    display: inline-block;
+    text-align: center;
+}
+
+.hero-btn-outline {
+    background: white;
+    color: black;
+    border: none;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .hero-btn {
+        padding: 14px 28px;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-btn {
+        padding: 12px 18px;
+        font-size: 0.85rem;
+    }
+    
+    .hero-buttons {
+        gap: 10px;
+    }
 }
 
 /* Responsive Adjustments */

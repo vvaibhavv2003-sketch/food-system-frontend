@@ -1,0 +1,125 @@
+
+.reservation-section {
+    padding: var(--section-spacing) 0;
+    background: #fff;
+}
+
+.reservation-container {
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    border-radius: 24px;
+    overflow: hidden;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.reservation-image {
+    flex: 1 1 400px;
+    min-height: 400px;
+    background-image: url(https://images.unsplash.com/photo-1559339352-11d035aa65de?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80);
+    background-size: cover;
+    background-position: center;
+}
+
+.reservation-content {
+    flex: 1 1 400px;
+    padding: 60px;
+}
+
+.reservation-table-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    background: #fcfcfc;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #f0f0f0;
+}
+
+.reservation-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.reservation-input {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    background: #f9f9f9;
+    outline: none;
+    color: var(--text-main);
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.reservation-input:focus {
+    border-color: var(--primary);
+}
+
+.reservation-submit-btn {
+    grid-column: 1 / -1;
+    padding: 18px;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: 0.3s;
+    box-shadow: 0 8px 25px rgba(255, 82, 0, 0.25);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .reservation-content {
+        padding: 40px;
+    }
+}
+
+@media (max-width: 900px) {
+    .reservation-table-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .reservation-image {
+        min-height: 300px;
+        flex: 1 1 100%;
+    }
+    
+    .reservation-content {
+        padding: 30px 20px;
+        flex: 1 1 100%;
+    }
+
+    .reservation-table-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .reservation-form {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 500px) {
+    .reservation-table-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile */
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .reservation-header h2 {
+        font-size: 28px !important;
+    }
+    
+    .reservation-submit-btn {
+        padding: 15px;
+        font-size: 14px;
+    }
+}

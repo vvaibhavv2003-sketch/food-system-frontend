@@ -111,18 +111,12 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
-                    style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}
+                    className="hero-buttons"
                 >
-                    <a href="#menu" className="btn-primary" style={{
-                        padding: '18px 48px', fontSize: '1.1rem', borderRadius: '50px', textDecoration: 'none',
-                        background: 'var(--primary)', color: 'white', fontWeight: '700'
-                    }}>
+                    <a href="#menu" className="btn-primary hero-btn">
                         Order Now
                     </a>
-                    <a href="#reservation" style={{
-                        padding: '18px 48px', background: 'white', color: 'black', textDecoration: 'none',
-                        border: 'none', borderRadius: '50px', cursor: 'pointer', fontWeight: '700', boxSizing: 'border-box', display: 'inline-block'
-                    }}>
+                    <a href="#reservation" className="hero-btn hero-btn-outline">
                         Book a Table
                     </a>
                 </motion.div>

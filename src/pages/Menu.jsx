@@ -158,7 +158,8 @@ const Menu = ({ addToCart, cart, decreaseQuantity }) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         marginTop: '50px',
-                        gap: '10px'
+                        gap: '10px',
+                        flexWrap: 'wrap'
                     }}>
                         <button
                             disabled={currentPage === 1}

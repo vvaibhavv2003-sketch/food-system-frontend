@@ -87,7 +87,7 @@ const Footer = () => {
                 <div>
                     <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '24px', color: 'white' }}>Newsletter</h3>
                     <p style={{ color: '#888', marginBottom: '16px' }}>Subscribe to get latest updates and offers.</p>
-                    <div style={{ display: 'flex', gap: '10px' }}>
+                    <div className="flex-stack-mobile" style={{ gap: '10px' }}>
                         <input
                             type="email"
                             placeholder="Email Address"
@@ -106,7 +106,8 @@ const Footer = () => {
                                 border: 'none',
                                 borderRadius: '4px',
                                 color: 'white',
-                                cursor: loading ? 'not-allowed' : 'pointer'
+                                cursor: loading ? 'not-allowed' : 'pointer',
+                                minWidth: '50px'
                             }}
                         >
                             {loading ? <i className="fa-solid fa-spinner fa-spin"></i> : <i className="fa-solid fa-paper-plane"></i>}

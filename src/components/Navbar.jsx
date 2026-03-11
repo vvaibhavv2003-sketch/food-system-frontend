@@ -5,6 +5,8 @@ import { useStore } from '../context/StoreContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { API_NEWSLETTER_UPDATE_SUMMARY } from '../config/apiConfig';
 
+import './Navbar.css';
+
 const Navbar = ({ cartCount, toggleCart }) => {
     const [scrolled, setScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false); // User Dropdown
@@ -62,22 +64,6 @@ const Navbar = ({ cartCount, toggleCart }) => {
         }
     };
 
-    const navbarStyle = {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '16px 5%',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        transition: 'all 0.3s ease',
-        backgroundColor: scrolled || isMobileMenuOpen ? 'rgba(255, 255, 255, 0.95)' : 'transparent',
-        backdropFilter: (scrolled || isMobileMenuOpen) ? 'blur(10px)' : 'none',
-        boxShadow: (scrolled || isMobileMenuOpen) ? '0 4px 20px rgba(0,0,0,0.05)' : 'none',
-    };
-
     const textColor = (scrolled || isMobileMenuOpen) ? '#333' : 'white';
 
     // Typewriter effect state
@@ -96,10 +82,13 @@ const Navbar = ({ cartCount, toggleCart }) => {
     const firstSpaceIndex = fullName.indexOf(' ');
 
     return (
-        <nav style={navbarStyle}>
+        <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`} style={{
+            backgroundColor: scrolled || isMobileMenuOpen ? 'rgba(255, 255, 255, 0.95)' : 'transparent',
+            backdropFilter: (scrolled || isMobileMenuOpen) ? 'blur(10px)' : 'none',
+        }}>
             {/* Logo */}
-            <Link to="/" style={{ textDecoration: 'none', zIndex: 1002 }}>
-                <div style={{ fontSize: '24px', fontWeight: '800', color: textColor, display: 'flex' }}>
+            <Link to="/" className="logo-container">
+                <div className="logo-text" style={{ color: textColor }}>
                     <motion.div
                         initial="hidden"
                         animate={isVisible ? "visible" : "hidden"}
@@ -113,7 +102,7 @@ const Navbar = ({ cartCount, toggleCart }) => {
                                 transition={{ duration: 0 }}
                                 style={{
                                     color: (firstSpaceIndex !== -1 && index < firstSpaceIndex) ? 'var(--primary)' : 'inherit',
-                                    marginRight: (char === ' ') ? '5px' : '0'
+                                    marginRight: (char === ' ') ? (isMobile ? '3px' : '5px') : '0'
                                 }}
                             >
                                 {char}
@@ -123,9 +112,7 @@ const Navbar = ({ cartCount, toggleCart }) => {
                 </div>
             </Link>
 
-            {/* Desktop Navigation Links Removed as per request (Moved to Dropdown/Mobile Menu) */}
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', zIndex: 1002 }}>
+            <div className="navbar-actions">
                 {/* Cart Icon */}
                 <div onClick={toggleCart} style={{ position: 'relative', cursor: 'pointer', color: textColor }}>
                     <i className="fa-solid fa-bag-shopping" style={{ fontSize: '22px' }}></i>
@@ -186,9 +173,6 @@ const Navbar = ({ cartCount, toggleCart }) => {
                                             <Link to="/my-orders" onClick={() => setIsMenuOpen(false)} style={dropdownItemStyle}><i className="fa-solid fa-clock-rotate-left"></i> My Orders</Link>
                                             <Link to="/profile" onClick={() => setIsMenuOpen(false)} style={dropdownItemStyle}><i className="fa-solid fa-user-gear"></i> Profile</Link>
 
-                                            {/* Added Navigation for Delivery Users */}
-                                            {/* Delivery options removed as per request */}
-
                                             {(user.role?.toLowerCase() === 'admin' || user.isAdmin) && (
                                                 <>
                                                     <Link to="/admin" onClick={() => setIsMenuOpen(false)} style={dropdownItemStyle}>
@@ -242,7 +226,6 @@ const Navbar = ({ cartCount, toggleCart }) => {
                                 </div>
                                 <Link to="/my-orders" onClick={() => setIsMobileMenuOpen(false)} style={mobileLinkStyle}>My Orders</Link>
                                 <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} style={mobileLinkStyle}>Profile</Link>
-                                {/* Delivery options removed */}
                                 {(user.role?.toLowerCase() === 'admin' || user.isAdmin) && (
                                     <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} style={mobileLinkStyle}>Admin Dashboard</Link>
                                 )}

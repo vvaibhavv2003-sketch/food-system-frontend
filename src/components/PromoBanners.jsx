@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useOffers } from '../context/OfferContext';
 import { useNavigate } from 'react-router-dom';
+import './PromoBanners.css';
 
 const TypewriterText = ({ text }) => {
     const [isVisible, setIsVisible] = useState(true);
@@ -107,32 +108,16 @@ const PromoBanners = () => {
     };
 
     return (
-        <section style={{ padding: '40px 0 80px 0', background: '#fcfcfc' }}>
+        <section className="promo-banners-section">
             <div className="container">
 
                 {/* Animated Heading */}
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: '60px',
-                    background: 'white',
-                    padding: '10px 40px',
-                    borderRadius: '50px',
-                    boxShadow: '0 5px 20px rgba(0,0,0,0.05)',
-                    width: 'fit-content',
-                    margin: '0 auto 60px auto'
-                }}>
+                <div className="promo-heading-container">
                     <TypewriterText text="New Best Offers in Toasty Bites.." />
                 </div>
 
                 {/* Cards Grid */}
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                    gap: '40px',
-                    paddingTop: '40px'
-                }}>
+                <div className="promo-grid">
                     <AnimatePresence mode="wait">
                         {displayOffers.map((item, index) => (
                             <motion.div
@@ -142,69 +127,26 @@ const PromoBanners = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                                whileHover={{ translateY: -10, cursor: 'pointer' }}
-                                style={{
-                                    background: 'white',
-                                    borderRadius: '30px',
-                                    padding: '0 20px 30px 20px',
-                                    textAlign: 'center',
-                                    boxShadow: '0 15px 40px rgba(0,0,0,0.08)',
-                                    position: 'relative',
-                                    marginTop: '100px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center'
-                                }}
+                                className="promo-card"
                             >
                                 {/* Floating Image */}
-                                <div style={{
-                                    width: '240px',
-                                    height: '240px',
-                                    borderRadius: '50%',
-                                    marginTop: '-120px',
-                                    marginBottom: '20px',
-                                    boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
-                                    overflow: 'hidden',
-                                    border: '6px solid white',
-                                    position: 'relative',
-                                    zIndex: 2,
-                                    background: '#eee'
-                                }}>
+                                <div className="promo-image-container">
                                     <img
                                         src={item.image}
                                         alt={item.title}
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                     />
                                 </div>
 
                                 {/* Content */}
-                                <h3 style={{
-                                    fontFamily: '"Playfair Display", serif',
-                                    fontSize: '22px',
-                                    fontWeight: '800',
-                                    color: '#2d3436',
-                                    marginBottom: '15px'
-                                }}>
+                                <h3 className="promo-title">
                                     {item.title}
                                 </h3>
 
-                                <p style={{
-                                    fontSize: '14px',
-                                    color: '#636e72',
-                                    lineHeight: '1.6',
-                                    fontStyle: 'italic',
-                                    marginBottom: '20px',
-                                    flex: 1
-                                }}>
+                                <p className="promo-subtitle">
                                     "{item.subtitle || 'Special offer just for you'}"
                                 </p>
 
-                                <div style={{
-                                    marginTop: 'auto',
-                                    fontSize: '20px',
-                                    fontWeight: '800',
-                                    color: 'var(--primary)'
-                                }}>
+                                <div className="promo-discount">
                                     {item.discount > 0 ? `${item.discount}% OFF` : 'Special Deal'}
                                 </div>
 

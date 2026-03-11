@@ -61,18 +61,26 @@ const InspirationCarousel = ({ setCategory }) => {
             </div>
             <style>{`
                 .custom-scrollbar::-webkit-scrollbar {
-                    height: 8px;
+                    height: 4px;
                 }
                 .custom-scrollbar::-webkit-scrollbar-track {
-                    background: #eee;
-                    border-radius: 4px;
+                    background: #f1f1f1;
+                    border-radius: 10px;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb {
                     background: var(--primary);
-                    border-radius: 4px;
+                    border-radius: 10px;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
                     background: #d32f2f;
+                }
+                @media (max-width: 768px) {
+                    .custom-scrollbar::-webkit-scrollbar {
+                        display: none;
+                    }
+                    .custom-scrollbar {
+                        scrollbar-width: none;
+                    }
                 }
             `}</style>
         </section>

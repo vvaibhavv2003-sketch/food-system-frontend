@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { API_BOOKINGS, API_BOOKINGS_STATUS } from '../config/apiConfig';
 
+import './ReservationSection.css';
+
 const ReservationSection = () => {
     const [formData, setFormData] = useState({
         name: '',
@@ -89,31 +91,21 @@ const ReservationSection = () => {
     };
 
     return (
-        <section id="reservation" style={{ padding: 'var(--section-spacing) 0', background: '#fff' }}>
-            <div className="container" style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.08)',
-                borderRadius: '24px',
-                overflow: 'hidden'
-            }}>
+        <section id="reservation" className="reservation-section">
+            <div className="container reservation-container">
                 {/* Image Side */}
-                <div style={{
-                    flex: '1 1 400px',
-                    minHeight: '400px',
-                    backgroundImage: 'url(https://images.unsplash.com/photo-1559339352-11d035aa65de?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                }}></div>
+                <div className="reservation-image"></div>
 
                 {/* Form Side */}
-                <div style={{ flex: '1 1 400px', padding: '60px' }}>
-                    <h3 style={{ fontSize: '14px', color: 'var(--primary)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '8px' }}>
-                        Book A Table
-                    </h3>
-                    <h2 style={{ fontSize: '36px', fontWeight: '800', marginBottom: '16px', lineHeight: '1.2' }}>
-                        Book Your Table For Private Dinners & Happy Hours
-                    </h2>
+                <div className="reservation-content">
+                    <div className="reservation-header">
+                        <h3 style={{ fontSize: '14px', color: 'var(--primary)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '8px' }}>
+                            Book A Table
+                        </h3>
+                        <h2 style={{ fontSize: '36px', fontWeight: '800', marginBottom: '16px', lineHeight: '1.2' }}>
+                            Book Your Table For Private Dinners & Happy Hours
+                        </h2>
+                    </div>
 
                     <div style={{
                         background: 'rgba(255, 82, 0, 0.1)',
@@ -128,7 +120,7 @@ const ReservationSection = () => {
                     </div>
 
                     <div style={{ marginBottom: '40px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
                             <h4 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)' }}>Select Your Table</h4>
                             <div style={{ display: 'flex', gap: '15px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '600' }}>
@@ -146,15 +138,7 @@ const ReservationSection = () => {
                             </div>
                         </div>
 
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(4, 1fr)',
-                            gap: '12px',
-                            background: '#fcfcfc',
-                            padding: '20px',
-                            borderRadius: '16px',
-                            border: '1px solid #f0f0f0'
-                        }}>
+                        <div className="reservation-table-grid">
                             {tables.map(table => {
                                 const isSelected = formData.tableNumber === table.number;
                                 return (
@@ -218,7 +202,7 @@ const ReservationSection = () => {
 
                     <form
                         onSubmit={handleSubmit}
-                        style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}
+                        className="reservation-form"
                     >
                         {formData.tableNumber && (
                             <motion.div
@@ -239,36 +223,27 @@ const ReservationSection = () => {
                                 Nice Choice! You are booking <span style={{ textDecoration: 'underline' }}>Table 0{formData.tableNumber < 10 ? `0${formData.tableNumber}` : formData.tableNumber}</span>
                             </motion.div>
                         )}
-                        <input name="name" type="text" placeholder="Your Name" required value={formData.name} onChange={handleChange} style={inputStyle} />
-                        <input name="email" type="email" placeholder="Email Address" required value={formData.email} onChange={handleChange} style={inputStyle} />
-                        <input name="mobile" type="tel" placeholder="Phone Number" required value={formData.mobile} onChange={handleChange} style={inputStyle} />
-                        <input name="date" type="date" required value={formData.date} onChange={handleChange} style={inputStyle} />
-                        <select name="guests" value={formData.guests} onChange={handleChange} style={inputStyle}>
+                        <input name="name" type="text" placeholder="Your Name" required value={formData.name} onChange={handleChange} className="reservation-input" />
+                        <input name="email" type="email" placeholder="Email Address" required value={formData.email} onChange={handleChange} className="reservation-input" />
+                        <input name="mobile" type="tel" placeholder="Phone Number" required value={formData.mobile} onChange={handleChange} className="reservation-input" />
+                        <input name="date" type="date" required value={formData.date} onChange={handleChange} className="reservation-input" />
+                        <select name="guests" value={formData.guests} onChange={handleChange} className="reservation-input">
                             <option>1 Person</option>
                             <option>2 People</option>
                             <option>3 People</option>
                             <option>4 People</option>
                             <option>5+ People</option>
                         </select>
-                        <input name="time" type="time" required value={formData.time} onChange={handleChange} style={inputStyle} />
+                        <input name="time" type="time" required value={formData.time} onChange={handleChange} className="reservation-input" />
 
                         <motion.button
                             disabled={loading}
                             whileHover={!loading ? { scale: 1.02, backgroundColor: '#e64a19' } : {}}
                             whileTap={!loading ? { scale: 0.98 } : {}}
+                            className="reservation-submit-btn"
                             style={{
-                                gridColumn: '1/-1',
-                                padding: '18px',
                                 background: loading ? '#ccc' : 'var(--primary)',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '12px',
-                                fontWeight: '800',
-                                fontSize: '16px',
-                                cursor: loading ? 'not-allowed' : 'pointer',
-                                marginTop: '10px',
-                                transition: '0.3s',
-                                boxShadow: '0 8px 25px rgba(255, 82, 0, 0.25)'
+                                cursor: loading ? 'not-allowed' : 'pointer'
                             }}
                         >
                             {loading ? 'Processing Your Reservation...' : 'Confirm Table Reservation (₹100)'}
@@ -278,17 +253,6 @@ const ReservationSection = () => {
             </div>
         </section>
     );
-};
-
-const inputStyle = {
-    width: '100%',
-    padding: '14px 20px',
-    borderRadius: '8px',
-    border: '1px solid #eee',
-    background: '#f9f9f9',
-    outline: 'none',
-    color: 'var(--text-main)',
-    fontSize: '14px'
 };
 
 export default ReservationSection;
