@@ -298,7 +298,7 @@ const AdminDashboard = () => {
                         <div style={{ animation: 'fadeIn 0.5s ease-in-out' }}>
                             <div className="admin-order-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
                                 <div className="admin-filters-row">
-                                    <h3 style={{ margin: 0, width: '100%', textAlign: 'center' }}>Recent Orders</h3>
+                                    <h3 style={{ margin: 0 }}>Recent Orders</h3>
 
                                     <div className="admin-filter-group">
                                         <div className="admin-search-container">
@@ -505,7 +505,7 @@ const AdminDashboard = () => {
                             {/* Search and Top Pagination */}
                             <div className="admin-menu-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px', marginBottom: '20px', gap: '20px', flexWrap: 'wrap' }}>
                                 <div className="admin-filters-row">
-                                    <h3 style={{ margin: 0, width: '100%', textAlign: 'center', whiteSpace: 'nowrap' }}>All Menu Items</h3>
+                                    <h3 style={{ margin: 0, whiteSpace: 'nowrap' }}>All Menu Items</h3>
                                     
                                     <div className="admin-filter-group">
                                         <div className="admin-search-container">
