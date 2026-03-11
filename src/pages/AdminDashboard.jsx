@@ -6,6 +6,7 @@ import { useOrders } from '../context/OrderContext';
 import { useStore } from '../context/StoreContext';
 import { useOffers } from '../context/OfferContext';
 import AdminAnalytics from './AdminAnalytics';
+import './AdminDashboard.css';
 import {
     API_UPLOAD,
     BASE_URL,
@@ -243,6 +244,30 @@ const AdminDashboard = () => {
                 </div>
             </aside>
 
+            {/* Mobile Bottom Navigation Bar */}
+            <nav className="admin-mobile-bar">
+                <div className={`admin-mobile-tab ${activeTab === 'analytics' ? 'active' : ''}`} onClick={() => setActiveTab('analytics')}>
+                    <i className="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div className={`admin-mobile-tab ${activeTab === 'orders' ? 'active' : ''}`} onClick={() => setActiveTab('orders')}>
+                    <i className="fa-solid fa-receipt"></i>
+                    <span>Orders</span>
+                </div>
+                <div className={`admin-mobile-tab ${activeTab === 'menu' ? 'active' : ''}`} onClick={() => setActiveTab('menu')}>
+                    <i className="fa-solid fa-utensils"></i>
+                    <span>Menu</span>
+                </div>
+                <div className={`admin-mobile-tab ${activeTab === 'tables' ? 'active' : ''}`} onClick={() => setActiveTab('tables')}>
+                    <i className="fa-solid fa-table"></i>
+                    <span>Tables</span>
+                </div>
+                <div className={`admin-mobile-tab ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
+                    <i className="fa-solid fa-sliders"></i>
+                    <span>Settings</span>
+                </div>
+            </nav>
+
             <div className="admin-main-container">
                 {/* Sub Navbar for Menu Management */}
                 {(activeTab === 'menu' || activeTab === 'categories' || activeTab === 'offers') && (
@@ -271,39 +296,41 @@ const AdminDashboard = () => {
                     {activeTab === 'tables' && <BookingManager />}
                     {activeTab === 'orders' && (
                         <div style={{ animation: 'fadeIn 0.5s ease-in-out' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
-                                <div style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
-                                    <h3 style={{ margin: 0 }}>Recent Orders</h3>
+                            <div className="admin-order-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
+                                <div className="admin-filters-row">
+                                    <h3 style={{ margin: 0, width: '100%', textAlign: 'center' }}>Recent Orders</h3>
 
-                                    <div style={{ position: 'relative', width: '250px' }}>
-                                        <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#999' }}></i>
-                                        <input
-                                            type="text"
-                                            placeholder="Search Order ID..."
-                                            value={searchTermOrder}
+                                    <div className="admin-filter-group">
+                                        <div className="admin-search-container">
+                                            <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#999', zIndex: 1 }}></i>
+                                            <input
+                                                type="text"
+                                                placeholder="Search Order ID..."
+                                                value={searchTermOrder}
+                                                onChange={(e) => {
+                                                    setSearchTermOrder(e.target.value);
+                                                    setCurrentPageOrders(1);
+                                                }}
+                                                style={{ ...inputStyle, paddingLeft: '35px', borderRadius: '25px', background: '#f8f9fa' }}
+                                            />
+                                        </div>
+
+                                        <select
+                                            value={filterOrderStatus}
                                             onChange={(e) => {
-                                                setSearchTermOrder(e.target.value);
+                                                setFilterOrderStatus(e.target.value);
                                                 setCurrentPageOrders(1);
                                             }}
-                                            style={{ ...inputStyle, paddingLeft: '35px', borderRadius: '25px', background: '#f8f9fa' }}
-                                        />
+                                            style={{ ...inputStyle, width: '150px', borderRadius: '25px', background: '#f8f9fa' }}
+                                        >
+                                            <option value="All">All Status</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Confirmed">Confirmed</option>
+                                            <option value="Preparing">Preparing</option>
+                                            <option value="Out for Delivery">Out for Delivery</option>
+                                            <option value="Delivered">Delivered</option>
+                                        </select>
                                     </div>
-
-                                    <select
-                                        value={filterOrderStatus}
-                                        onChange={(e) => {
-                                            setFilterOrderStatus(e.target.value);
-                                            setCurrentPageOrders(1);
-                                        }}
-                                        style={{ ...inputStyle, width: '150px', borderRadius: '25px', background: '#f8f9fa' }}
-                                    >
-                                        <option value="All">All Status</option>
-                                        <option value="Pending">Pending</option>
-                                        <option value="Confirmed">Confirmed</option>
-                                        <option value="Preparing">Preparing</option>
-                                        <option value="Out for Delivery">Out for Delivery</option>
-                                        <option value="Delivered">Delivered</option>
-                                    </select>
                                 </div>
                                 <button
                                     onClick={handleResetOrders}
@@ -387,7 +414,7 @@ const AdminDashboard = () => {
                                     </div>
 
                                     {filteredOrders.length > PAGINATION_LIMIT_ORDERS && (
-                                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', marginTop: '30px', padding: '15px', background: 'white', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+                                        <div className="admin-pagination" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', marginTop: '30px', padding: '15px', background: 'white', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                                             <button disabled={currentPageOrders === 1} onClick={() => setCurrentPageOrders(prev => prev - 1)} style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: currentPageOrders === 1 ? '#f1f1f1' : 'var(--primary)', color: currentPageOrders === 1 ? '#aaa' : 'white', cursor: currentPageOrders === 1 ? 'not-allowed' : 'pointer', fontWeight: 'bold', transition: '0.2s' }}>Previous</button>
                                             <span style={{ padding: '8px 16px', fontWeight: 'bold', color: '#555' }}>Page {currentPageOrders} of {Math.ceil(filteredOrders.length / PAGINATION_LIMIT_ORDERS)}</span>
                                             <button disabled={currentPageOrders === Math.ceil(filteredOrders.length / PAGINATION_LIMIT_ORDERS)} onClick={() => setCurrentPageOrders(prev => prev + 1)} style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: currentPageOrders === Math.ceil(filteredOrders.length / PAGINATION_LIMIT_ORDERS) ? '#f1f1f1' : 'var(--primary)', color: currentPageOrders === Math.ceil(filteredOrders.length / PAGINATION_LIMIT_ORDERS) ? '#aaa' : 'white', cursor: currentPageOrders === Math.ceil(filteredOrders.length / PAGINATION_LIMIT_ORDERS) ? 'not-allowed' : 'pointer', fontWeight: 'bold', transition: '0.2s' }}>Next</button>
@@ -400,7 +427,7 @@ const AdminDashboard = () => {
 
                     {activeTab === 'menu' && (
                         <>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                            <div className="admin-menu-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
                                 <h3>Menu Overview</h3>
 
                                 <button
@@ -412,7 +439,7 @@ const AdminDashboard = () => {
                             </div>
 
                             {/* Quick Stats for Menu Tab */}
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '40px' }}>
+                            <div className="admin-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '40px' }}>
                                 <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: 'var(--shadow-sm)', borderLeft: '4px solid var(--primary)' }}>
                                     <h3 style={{ fontSize: '16px', color: '#888' }}>Total Items</h3>
                                     <p style={{ fontSize: '32px', fontWeight: '800', color: '#333' }}>{foodItems.length}</p>
@@ -421,17 +448,13 @@ const AdminDashboard = () => {
                                     <h3 style={{ fontSize: '16px', color: '#888' }}>Categories</h3>
                                     <p style={{ fontSize: '32px', fontWeight: '800', color: '#333' }}>{[...new Set(foodItems.map(i => i.category))].length}</p>
                                 </div>
-                                <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: 'var(--shadow-sm)', borderLeft: '4px solid #f39c12' }}>
-                                    <h3 style={{ fontSize: '16px', color: '#888' }}>News Desk</h3>
-                                    <p style={{ fontSize: '32px', fontWeight: '800', color: '#333' }}>Ready to Send ✉️</p>
-                                </div>
                             </div>
 
                             {/* Add/Edit Form */}
                             {showForm && (
                                 <div style={{ background: 'white', padding: '30px', borderRadius: '12px', boxShadow: 'var(--shadow-md)', marginBottom: '40px', animation: 'slideInDown 0.3s ease' }}>
                                     <h3 style={{ marginBottom: '20px' }}>{isEditing ? 'Edit Item' : 'Add New Item'}</h3>
-                                    <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                    <form onSubmit={handleSubmit} className="admin-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
 
                                         <div style={{ gridColumn: '1 / -1' }}>
                                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Item Name</label>
@@ -481,46 +504,49 @@ const AdminDashboard = () => {
                             )}
 
                             {/* Search and Top Pagination */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px', marginBottom: '20px', gap: '20px', flexWrap: 'wrap' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flex: 1 }}>
-                                    <h3 style={{ margin: 0, whiteSpace: 'nowrap' }}>All Menu Items</h3>
-                                    <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
-                                        <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#999' }}></i>
-                                        <input
-                                            type="text"
-                                            placeholder="Search items or categories..."
-                                            value={searchTermFood}
+                            <div className="admin-menu-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px', marginBottom: '20px', gap: '20px', flexWrap: 'wrap' }}>
+                                <div className="admin-filters-row">
+                                    <h3 style={{ margin: 0, width: '100%', textAlign: 'center', whiteSpace: 'nowrap' }}>All Menu Items</h3>
+                                    
+                                    <div className="admin-filter-group">
+                                        <div className="admin-search-container">
+                                            <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#999', zIndex: 1 }}></i>
+                                            <input
+                                                type="text"
+                                                placeholder="Search menu..."
+                                                value={searchTermFood}
+                                                onChange={(e) => {
+                                                    setSearchTermFood(e.target.value);
+                                                    setCurrentPageFoodItems(1);
+                                                }}
+                                                style={{ ...inputStyle, paddingLeft: '35px', borderRadius: '25px', background: '#f8f9fa' }}
+                                            />
+                                        </div>
+                                        <select
+                                            value={selectedCategoryFilter}
                                             onChange={(e) => {
-                                                setSearchTermFood(e.target.value);
+                                                setSelectedCategoryFilter(e.target.value);
                                                 setCurrentPageFoodItems(1);
                                             }}
-                                            style={{ ...inputStyle, paddingLeft: '35px', borderRadius: '25px', background: '#f8f9fa' }}
-                                        />
+                                            style={{ ...inputStyle, width: '150px', borderRadius: '25px', background: '#f8f9fa' }}
+                                        >
+                                            <option value="All">All Categories</option>
+                                            {categories.map(cat => (
+                                                <option key={cat.name} value={cat.name}>{cat.name}</option>
+                                            ))}
+                                        </select>
                                     </div>
-                                    <select
-                                        value={selectedCategoryFilter}
-                                        onChange={(e) => {
-                                            setSelectedCategoryFilter(e.target.value);
-                                            setCurrentPageFoodItems(1);
-                                        }}
-                                        style={{ ...inputStyle, width: '150px', borderRadius: '25px', background: '#f8f9fa' }}
-                                    >
-                                        <option value="All">All Categories</option>
-                                        {categories.map(cat => (
-                                            <option key={cat.name} value={cat.name}>{cat.name}</option>
-                                        ))}
-                                    </select>
                                 </div>
                             </div>
-                            <div style={{ background: 'white', borderRadius: '12px', overflowX: 'auto', boxShadow: 'var(--shadow-sm)' }}>
+                            <div className="admin-table-wrapper" style={{ background: 'white', borderRadius: '12px', overflowX: 'auto', boxShadow: 'var(--shadow-sm)' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: '#f9f9f9', textAlign: 'left', fontSize: '14px', color: '#666' }}>
-                                            <th style={{ padding: '15px' }}>Image</th>
-                                            <th style={{ padding: '15px' }}>Name</th>
-                                            <th style={{ padding: '15px' }}>Category</th>
-                                            <th style={{ padding: '15px' }}>Price</th>
-                                            <th style={{ padding: '15px' }}>Actions</th>
+                                            <th>Image</th>
+                                            <th>Name</th>
+                                            <th>Category</th>
+                                            <th>Price</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -528,18 +554,18 @@ const AdminDashboard = () => {
                                             .slice((currentPageFoodItems - 1) * PAGINATION_LIMIT_FOOD, currentPageFoodItems * PAGINATION_LIMIT_FOOD)
                                             .map(item => (
                                                 <tr key={item.id} style={{ borderBottom: '1px solid #eee' }}>
-                                                    <td style={{ padding: '15px' }}>
+                                                    <td>
                                                         <img src={item.image} alt={item.name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '8px' }} />
                                                     </td>
-                                                    <td style={{ padding: '15px' }}>
+                                                    <td>
                                                         <p style={{ fontWeight: 'bold' }}>{item.name}</p>
                                                         <p style={{ fontSize: '12px', color: '#888' }}>{item.isVeg ? '🟢 Veg' : '🔴 Non-Veg'}</p>
                                                     </td>
-                                                    <td style={{ padding: '15px' }}>
+                                                    <td>
                                                         <span style={{ background: '#eee', padding: '4px 8px', borderRadius: '4px', fontSize: '12px' }}>{item.category}</span>
                                                     </td>
-                                                    <td style={{ padding: '15px', fontWeight: 'bold' }}>₹{item.price}</td>
-                                                    <td style={{ padding: '15px' }}>
+                                                    <td style={{ fontWeight: 'bold' }}>₹{item.price}</td>
+                                                    <td>
                                                         <button onClick={() => handleEdit(item)} style={{ marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer', color: 'orange', fontSize: '18px' }} title="Edit">
                                                             <i className="fa-solid fa-pen-to-square"></i>
                                                         </button>
@@ -553,7 +579,7 @@ const AdminDashboard = () => {
                                 </table>
 
                                 {displayFoodItems.length > PAGINATION_LIMIT_FOOD && (
-                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', padding: '20px', background: '#f9f9f9', borderTop: '1px solid #eee' }}>
+                                    <div className="admin-pagination" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', padding: '20px', background: '#f9f9f9', borderTop: '1px solid #eee' }}>
                                         <button
                                             disabled={currentPageFoodItems === 1}
                                             onClick={() => {
@@ -802,7 +828,7 @@ const SubscriberUpdateManager = () => {
     };
 
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', background: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: 'var(--shadow-md)' }}>
+        <div className="admin-container-centered" style={{ textAlign: 'center', background: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: 'var(--shadow-md)' }}>
             <div style={{ width: '100%', height: '250px', position: 'relative', overflow: 'hidden' }}>
                 <img
                     src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
@@ -911,7 +937,7 @@ const BroadcastManager = () => {
     };
 
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <div className="admin-container-centered">
             <h3 style={{ marginBottom: '20px' }}>📢 Broadcast Message</h3>
             <div style={{ background: 'white', padding: '30px', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
                 <form onSubmit={handleSend} style={{ display: 'grid', gap: '20px' }}>
@@ -995,7 +1021,7 @@ const CategoryManager = ({ categories, addCategory, deleteCategory, updateCatego
                     {isEditing && <button onClick={resetForm} style={{ padding: '5px 10px', background: '#eee', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>}
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 100px', gap: '15px', alignItems: 'end' }}>
+                <form onSubmit={handleSubmit} className="admin-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 100px', gap: '15px', alignItems: 'end' }}>
                     <div>
                         <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: 'bold' }}>Category Name</label>
                         <input required type="text" value={name} onChange={e => setName(e.target.value)} style={inputStyle} placeholder="e.g. Pasta" />
@@ -1017,7 +1043,7 @@ const CategoryManager = ({ categories, addCategory, deleteCategory, updateCatego
             </div>
 
             {/* Category List */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
+            <div className="admin-card-grid">
                 {categories.map(cat => (
                     <div key={cat._id} style={{ background: 'white', padding: '15px', borderRadius: '10px', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
                         <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '5px' }}>
@@ -1109,7 +1135,7 @@ const StoreSettingsManager = ({ storeSettings, updateSettings }) => {
                         />
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                    <div className="admin-form-row-2">
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Contact Email</label>
                             <input
@@ -1157,7 +1183,7 @@ const StoreSettingsManager = ({ storeSettings, updateSettings }) => {
                         />
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px' }}>
+                    <div className="admin-form-row-3">
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>GST NO</label>
                             <input
@@ -1477,7 +1503,7 @@ const OfferManager = ({ offers, addOffer, updateOffer, deleteOffer }) => {
                 </div>
 
                 {/* 2. Offers Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+                <div className="admin-card-grid">
                     {offers.map(offer => (
                         <div key={offer._id} style={{
                             background: `url(${offer.image})`, backgroundSize: 'cover', backgroundPosition: 'center',
@@ -1648,11 +1674,12 @@ const OfferItemManager = ({ offer, onUpdate }) => {
 
             <div style={{ display: 'grid', gap: '10px' }}>
                 {items.length === 0 ? <p>No items in this offer yet.</p> : items.map((item, idx) => (
-                    <div key={idx} style={{
+                    <div key={idx} className="admin-order-header" style={{
                         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                         padding: '10px', border: '1px solid #eee', borderRadius: '4px',
                         background: editingIndex === idx ? '#fff3cd' : 'white',
-                        borderLeft: editingIndex === idx ? '4px solid orange' : '1px solid #eee'
+                        borderLeft: editingIndex === idx ? '4px solid orange' : '1px solid #eee',
+                        gap: '10px'
                     }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             {item.image && <img src={item.image} alt={item.name} style={{ width: '40px', height: '40px', borderRadius: '4px', objectFit: 'cover' }} />}
@@ -1725,13 +1752,13 @@ const BookingManager = () => {
     };
 
     return (
-        <div style={{ padding: '30px', background: '#fff', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+        <div className="admin-main-card" style={{ padding: '20px', background: '#fff', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
             <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '24px' }}>Table Booking Manager</h2>
 
             {loading ? (
                 <p>Loading table statuses...</p>
             ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
+                <div className="admin-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
                     {bookings.map(table => (
                         <div key={table.number} style={{
                             padding: '20px',

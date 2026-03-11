@@ -361,18 +361,19 @@ h6 {
     width: 100%;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 992px) and (min-width: 769px) {
     .admin-sidebar {
-        width: 80px;
-        padding: 30px 10px;
+        width: 70px;
+        padding: 20px 8px;
     }
 
-    .admin-nav-link span {
-        display: none;
-    }
-
+    .admin-nav-link span,
     .admin-sidebar .admin-logo-text {
         display: none;
+    }
+
+    .admin-nav-link {
+        justify-content: center;
     }
 }
 

@@ -76,7 +76,7 @@ const AdminAnalytics = () => {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
             <h3 style={{ marginBottom: '20px', color: '#444' }}>📊 Financial Analytics (Profit & Deliveries)</h3>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+            <div className="admin-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '30px' }}>
                 {/* Today */}
                 <div style={{ padding: '25px', background: 'linear-gradient(135deg, #6c5ce7, #a29bfe)', borderRadius: '16px', color: 'white', boxShadow: '0 8px 20px rgba(108, 92, 231, 0.3)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -123,13 +123,13 @@ const AdminAnalytics = () => {
             </div>
 
             {/* 6 Months Chart */}
-            <div style={{ background: 'white', padding: '30px', borderRadius: '16px', border: '1px solid #eee', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+            <div style={{ background: 'white', padding: '20px', borderRadius: '16px', border: '1px solid #eee', boxShadow: '0 4px 15px rgba(0,0,0,0.02)', overflowX: 'auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
                     <h4 style={{ margin: 0, color: '#444' }}>📈 6 Month Revenue Overview</h4>
                     <span style={{ fontSize: '12px', background: '#f5f5f5', padding: '5px 10px', borderRadius: '20px', color: '#666' }}>Updated Live</span>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'flex-end', height: '220px', gap: '15px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', height: '220px', gap: '10px', minWidth: '400px' }}>
                     {stats.chartData.map((data, i) => {
                         const maxVal = Math.max(...stats.chartData.map(d => d.value), 100);
                         const heightPct = (data.value / maxVal) * 100;
