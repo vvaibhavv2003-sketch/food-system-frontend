@@ -23,6 +23,23 @@
     flex: 1;
 }
 
+.admin-search-container {
+    position: relative;
+    flex: 1;
+}
+
+/* Hide scrollbars globally on mobile */
+@media (max-width: 768px) {
+    * {
+        scrollbar-width: none !important; /* Firefox */
+        -ms-overflow-style: none !important;  /* IE and Edge */
+    }
+    
+    *::-webkit-scrollbar {
+        display: none !important; /* Chrome, Safari, Opera */
+    }
+}
+
 .admin-container-centered {
     max-width: 800px;
     margin: 0 auto;
@@ -85,6 +102,7 @@
     .admin-layout {
         flex-direction: column;
         padding-bottom: 70px; /* Space for bottom nav */
+        background: white !important; /* Unified background */
     }
 
     /* Hide the sidebar completely on mobile */
@@ -140,6 +158,8 @@
     .admin-main {
         padding: 15px 12px !important;
         width: 100%;
+        background: white !important;
+        min-height: calc(100vh - 70px);
     }
 
     .admin-main-container {
@@ -288,6 +308,7 @@
     }
 
     .admin-search-container {
+        position: relative !important;
         flex: 1;
     }
 

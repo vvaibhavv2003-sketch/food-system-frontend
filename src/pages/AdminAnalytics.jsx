@@ -123,13 +123,25 @@ const AdminAnalytics = () => {
             </div>
 
             {/* 6 Months Chart */}
-            <div style={{ background: 'white', padding: '20px', borderRadius: '16px', border: '1px solid #eee', boxShadow: '0 4px 15px rgba(0,0,0,0.02)', overflowX: 'auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                    <h4 style={{ margin: 0, color: '#444' }}>📈 6 Month Revenue Overview</h4>
-                    <span style={{ fontSize: '12px', background: '#f5f5f5', padding: '5px 10px', borderRadius: '20px', color: '#666' }}>Updated Live</span>
+            <div 
+                className="admin-chart-wrapper"
+                style={{ 
+                    background: 'white', 
+                    padding: '20px 15px', 
+                    borderRadius: '16px', 
+                    border: '1px solid #eee', 
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.02)', 
+                    overflowX: 'auto',
+                    margin: window.innerWidth <= 768 ? '0 -12px 0 -12px' : '0 0 30px 0',
+                    width: window.innerWidth <= 768 ? 'calc(100% + 24px)' : '100%'
+                }}
+            >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', padding: '0 12px' }}>
+                    <h4 style={{ margin: 0, color: '#444', fontSize: '15px' }}>📈 6 Month Revenue Overview</h4>
+                    <span style={{ fontSize: '10px', background: '#f5f5f5', padding: '4px 10px', borderRadius: '20px', color: '#666' }}>Updated Live</span>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'flex-end', height: '220px', gap: '10px', minWidth: '400px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', height: '200px', gap: '8px', minWidth: '400px', paddingBottom: '10px' }}>
                     {stats.chartData.map((data, i) => {
                         const maxVal = Math.max(...stats.chartData.map(d => d.value), 100);
                         const heightPct = (data.value / maxVal) * 100;
@@ -137,7 +149,7 @@ const AdminAnalytics = () => {
                         return (
                             <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'center', height: '100%' }}>
                                 {data.value > 0 && (
-                                    <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#666', marginBottom: '5px' }}>₹{data.value}</span>
+                                    <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#666', marginBottom: '5px' }}>₹{data.value}</span>
                                 )}
                                 <motion.div
                                     initial={{ height: 0 }}
@@ -152,7 +164,7 @@ const AdminAnalytics = () => {
                                     }}
                                     title={`Revenue: ₹${data.value}`}
                                 />
-                                <span style={{ marginTop: '10px', fontSize: '12px', color: '#888', fontWeight: '600' }}>{data.label}</span>
+                                <span style={{ marginTop: '10px', fontSize: '11px', color: '#888', fontWeight: '600' }}>{data.label}</span>
                             </div>
                         );
                     })}

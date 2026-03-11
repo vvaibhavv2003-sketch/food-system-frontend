@@ -302,7 +302,6 @@ const AdminDashboard = () => {
 
                                     <div className="admin-filter-group">
                                         <div className="admin-search-container">
-                                            <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#999', zIndex: 1 }}></i>
                                             <input
                                                 type="text"
                                                 placeholder="Search Order ID..."
@@ -311,7 +310,7 @@ const AdminDashboard = () => {
                                                     setSearchTermOrder(e.target.value);
                                                     setCurrentPageOrders(1);
                                                 }}
-                                                style={{ ...inputStyle, paddingLeft: '35px', borderRadius: '25px', background: '#f8f9fa' }}
+                                                style={{ ...inputStyle, paddingLeft: '15px', borderRadius: '25px', background: '#f8f9fa' }}
                                             />
                                         </div>
 
@@ -510,7 +509,6 @@ const AdminDashboard = () => {
                                     
                                     <div className="admin-filter-group">
                                         <div className="admin-search-container">
-                                            <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#999', zIndex: 1 }}></i>
                                             <input
                                                 type="text"
                                                 placeholder="Search menu..."
@@ -519,7 +517,7 @@ const AdminDashboard = () => {
                                                     setSearchTermFood(e.target.value);
                                                     setCurrentPageFoodItems(1);
                                                 }}
-                                                style={{ ...inputStyle, paddingLeft: '35px', borderRadius: '25px', background: '#f8f9fa' }}
+                                                style={{ ...inputStyle, paddingLeft: '15px', borderRadius: '25px', background: '#f8f9fa' }}
                                             />
                                         </div>
                                         <select
