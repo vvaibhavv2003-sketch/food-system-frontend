@@ -4,7 +4,8 @@
 
 /* --- Mobile Bottom Navigation Bar --- */
 .admin-mobile-bar {
-    display: none; /* Hidden by default on desktop */
+    display: none;
+    /* Hidden by default on desktop */
 }
 
 /* --- Responsive Admin Layout --- */
@@ -25,7 +26,8 @@
 
 .admin-search-container {
     position: relative;
-    width: 250px; /* Proper desktop width */
+    width: 250px;
+    /* Proper desktop width */
 }
 
 .admin-search-container {
@@ -36,25 +38,30 @@
 /* Hide scrollbars globally on mobile */
 @media (max-width: 768px) {
     * {
-        scrollbar-width: none !important; /* Firefox */
-        -ms-overflow-style: none !important;  /* IE and Edge */
+        scrollbar-width: none !important;
+        /* Firefox */
+        -ms-overflow-style: none !important;
+        /* IE and Edge */
     }
-    
+
     *::-webkit-scrollbar {
-        display: none !important; /* Chrome, Safari, Opera */
+        display: none !important;
+        /* Chrome, Safari, Opera */
     }
 }
 
 .admin-layout {
     display: flex;
-    height: 100vh; /* Lock height for independent scroll */
+    height: 100vh;
+    /* Lock height for independent scroll */
     overflow: hidden;
     background: #fdfdfd;
 }
 
 .admin-main {
     flex: 1;
-    overflow-y: auto; /* Only content scrolls */
+    overflow-y: auto;
+    /* Only content scrolls */
     padding: 30px;
     height: 100%;
 }
@@ -122,8 +129,10 @@
         flex-direction: column;
         height: auto;
         overflow: visible;
-        padding-bottom: 70px; /* Space for bottom nav */
-        background: white !important; /* Unified background */
+        padding-bottom: 70px;
+        /* Space for bottom nav */
+        background: white !important;
+        /* Unified background */
     }
 
     .admin-main {
@@ -146,7 +155,7 @@
         z-index: 1001;
         background: white;
         border-top: 1px solid #eee;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
         padding: 6px 0;
         justify-content: space-around;
         align-items: center;
@@ -228,22 +237,26 @@
     .admin-table-wrapper {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-        margin: 0 -12px; /* Pull to edges on mobile */
+        margin: 0 -12px;
+        /* Pull to edges on mobile */
         width: calc(100% + 24px);
     }
 
     .admin-table-wrapper table {
         width: 100%;
-        min-width: 320px; /* Standard mobile width */
+        min-width: 320px;
+        /* Standard mobile width */
         border-collapse: collapse;
-        text-align: left; /* Force left alignment */
+        text-align: left;
+        /* Force left alignment */
     }
 
-    .admin-table-wrapper th, 
+    .admin-table-wrapper th,
     .admin-table-wrapper td {
         padding: 10px 6px !important;
         font-size: 13px !important;
-        text-align: left !important; /* Force left align on mobile */
+        text-align: left !important;
+        /* Force left align on mobile */
     }
 
     /* Name column - tighter wrapping and strict left alignment */
@@ -257,6 +270,7 @@
 
     /* Category column - hide on very small mobile */
     @media (max-width: 400px) {
+
         .admin-table-wrapper th:nth-child(3),
         .admin-table-wrapper td:nth-child(3) {
             display: none;
@@ -300,7 +314,7 @@
     }
 
     /* Target category cards specifically for better fit in 2 columns */
-    .admin-card-grid > div {
+    .admin-card-grid>div {
         padding: 10px !important;
     }
 
@@ -336,7 +350,8 @@
     .admin-search-container {
         position: relative !important;
         flex: 1;
-        width: auto !important; /* Allow growing on mobile */
+        width: auto !important;
+        /* Allow growing on mobile */
     }
 
     .admin-filters-row select {
@@ -350,7 +365,7 @@
         padding: 8px 10px 8px 30px !important;
         font-size: 11px !important;
     }
-    
+
     .admin-search-container i {
         left: 10px !important;
         font-size: 12px !important;
