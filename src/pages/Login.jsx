@@ -74,7 +74,7 @@ const Login = () => {
 
                 {/* Role Toggles */}
                 <motion.div variants={itemVariants} style={{ display: 'flex', background: '#f5f5f5', borderRadius: '12px', padding: '5px', marginBottom: '30px' }}>
-                    {['user', 'admin', 'delivery'].map(r => (
+                    {['user', 'delivery'].map(r => (
                         <button
                             key={r}
                             onClick={() => setRole(r)}
