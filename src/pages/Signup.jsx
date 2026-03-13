@@ -10,27 +10,62 @@ const Signup = () => {
     const [mobile, setMobile] = useState('');
     const [password, setPassword] = useState('');
 
-    // OTP State
     const [step, setStep] = useState(1); // 1: Details, 2: OTP
-    const [otp, setOtp] = useState('');
-
+    /* const [otp, setOtp] = useState(''); */
     const [focusedInput, setFocusedInput] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    
     const { register, verifyOtp } = useAuth();
     const navigate = useNavigate();
 
-    const handleSignup = async (e) => {
-        e.preventDefault();
-        const userData = { name, email, mobile, password, role };
-
-        const result = await register(userData);
-        if (result.success) {
-            alert('OTP sent to your email address.');
-            setStep(2);
-        } else {
-            alert(result.message);
+    const handleMobileChange = (e) => {
+        const value = e.target.value.replace(/\D/g, ''); // Only digits
+        if (value.length <= 10) {
+            setMobile(value);
         }
     };
 
+    const handleSignup = async (e) => {
+        e.preventDefault();
+        
+        // Mobile Validation
+        if (mobile.length !== 10) {
+            alert('Please enter a valid 10-digit mobile number.');
+            return;
+        }
+
+        const userData = { name, email, mobile, password, role };
+        setIsLoading(true);
+
+        const result = await register(userData);
+        if (result.success) {
+            // OTP verification bypass logic
+            if (result.otp) {
+                const verifyResult = await verifyOtp(mobile, result.otp, userData);
+                if (verifyResult.success) {
+                    alert('Registration Successful! Welcome.');
+                    if (role === 'admin') navigate('/admin');
+                    else if (role === 'delivery') navigate('/delivery');
+                    else navigate('/');
+                } else {
+                    alert(verifyResult.message);
+                }
+            } else {
+                // Original OTP flow (commented out)
+                /*
+                alert('OTP sent to your email address.');
+                setStep(2);
+                */
+                alert('Registration submitted. OTP verification may be required.');
+            }
+        } else {
+            alert(result.message);
+        }
+        setIsLoading(false);
+    };
+
+    /*
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
         const userData = { name, email, mobile, password, role };
@@ -44,6 +79,7 @@ const Signup = () => {
             alert(result.message);
         }
     };
+    */
 
     const containerVariants = {
         hidden: { opacity: 0, scale: 0.95 },
@@ -159,9 +195,10 @@ const Signup = () => {
                                 <div style={{ borderRadius: '12px', border: focusedInput === 'mobile' ? '1px solid var(--primary)' : '1px solid #eee', background: '#fff', transition: 'all 0.2s' }}>
                                     <input
                                         type="tel"
-                                        placeholder="Mobile Number"
+                                        placeholder="Mobile Number (10 digits)"
                                         required
-                                        value={mobile} onChange={e => setMobile(e.target.value)}
+                                        value={mobile} 
+                                        onChange={handleMobileChange}
                                         onFocus={() => setFocusedInput('mobile')}
                                         onBlur={() => setFocusedInput(null)}
                                         style={{ width: '100%', padding: '15px', borderRadius: '12px', border: 'none', outline: 'none' }}
@@ -170,58 +207,89 @@ const Signup = () => {
                             </motion.div>
 
                             <motion.div variants={itemVariants}>
-                                <div style={{ borderRadius: '12px', border: focusedInput === 'password' ? '1px solid var(--primary)' : '1px solid #eee', background: '#fff', transition: 'all 0.2s' }}>
+                                <div style={{ 
+                                    borderRadius: '12px', 
+                                    border: focusedInput === 'password' ? '1px solid var(--primary)' : '1px solid #eee', 
+                                    background: '#fff', 
+                                    transition: 'all 0.2s',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    position: 'relative'
+                                }}>
                                     <input
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         placeholder="Password"
                                         required
                                         value={password} onChange={e => setPassword(e.target.value)}
                                         onFocus={() => setFocusedInput('password')}
                                         onBlur={() => setFocusedInput(null)}
-                                        style={{ width: '100%', padding: '15px', borderRadius: '12px', border: 'none', outline: 'none' }}
+                                        style={{ width: '100%', padding: '15px', paddingRight: '45px', borderRadius: '12px', border: 'none', outline: 'none' }}
                                     />
+                                    <div 
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        style={{ 
+                                            position: 'absolute', 
+                                            right: '15px', 
+                                            cursor: 'pointer', 
+                                            color: '#888',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                    >
+                                        {showPassword ? (
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                                        ) : (
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                        )}
+                                    </div>
                                 </div>
                             </motion.div>
 
                             <motion.button
                                 variants={itemVariants}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
+                                whileHover={!isLoading ? { scale: 1.02 } : {}}
+                                whileTap={!isLoading ? { scale: 0.98 } : {}}
                                 type="submit"
                                 className="btn-primary"
-                                style={{ padding: '15px', fontSize: '16px', borderRadius: '12px', boxShadow: '0 10px 20px rgba(255, 82, 0, 0.2)' }}>
-                                Get OTP
+                                disabled={isLoading}
+                                style={{ 
+                                    padding: '15px', 
+                                    fontSize: '16px', 
+                                    borderRadius: '12px', 
+                                    boxShadow: '0 10px 20px rgba(255, 82, 0, 0.2)',
+                                    opacity: isLoading ? 0.7 : 1,
+                                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    gap: '10px'
+                                }}>
+                                {isLoading ? (
+                                    <>
+                                        <div style={{
+                                            width: '20px',
+                                            height: '20px',
+                                            border: '2px solid white',
+                                            borderTop: '2px solid transparent',
+                                            borderRadius: '50%',
+                                            animation: 'spin 1s linear infinite'
+                                        }}></div>
+                                        Processing...
+                                    </>
+                                ) : 'Sign Up'}
                             </motion.button>
                         </form>
                     ) : (
+                        /* OTP verification form (Commented out)
                         <form onSubmit={handleVerifyOtp} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <motion.div variants={itemVariants}>
-                                <div style={{ borderRadius: '12px', border: focusedInput === 'otp' ? '1px solid var(--primary)' : '1px solid #eee', background: '#fff', transition: 'all 0.2s' }}>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter 4-digit OTP"
-                                        required
-                                        value={otp} onChange={e => setOtp(e.target.value)}
-                                        onFocus={() => setFocusedInput('otp')}
-                                        onBlur={() => setFocusedInput(null)}
-                                        style={{ width: '100%', padding: '15px', borderRadius: '12px', border: 'none', outline: 'none', textAlign: 'center', fontSize: '20px', letterSpacing: '5px' }}
-                                    />
-                                </div>
-                            </motion.div>
-
-                            <motion.button
-                                variants={itemVariants}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                type="submit"
-                                className="btn-primary"
-                                style={{ padding: '15px', fontSize: '16px', borderRadius: '12px', boxShadow: '0 10px 20px rgba(255, 82, 0, 0.2)' }}>
-                                Verify & Signup
-                            </motion.button>
-                            <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                                <span onClick={() => setStep(1)} style={{ cursor: 'pointer', color: '#888', textDecoration: 'underline' }}>Back to Details</span>
-                            </div>
+                            ... (see commented handleVerifyOtp)
                         </form>
+                        */
+                        <div style={{ textAlign: 'center' }}>
+                            <p>Verification in progress...</p>
+                            <span onClick={() => setStep(1)} style={{ cursor: 'pointer', color: '#888', textDecoration: 'underline' }}>Back</span>
+                        </div>
                     )}
 
                     {step === 1 && (

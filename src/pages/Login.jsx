@@ -8,12 +8,17 @@ const Login = () => {
     const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [focusedInput, setFocusedInput] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
     const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         const result = await login(identifier, password);
+        setIsLoading(false);
 
         if (result.success) {
             if (role === 'admin') navigate('/admin');
@@ -113,16 +118,42 @@ const Login = () => {
                     </motion.div>
 
                     <motion.div variants={itemVariants}>
-                        <div style={{ borderRadius: '12px', border: focusedInput === 'password' ? '1px solid var(--primary)' : '1px solid #eee', background: '#fff', transition: 'all 0.2s' }}>
+                        <div style={{ 
+                            borderRadius: '12px', 
+                            border: focusedInput === 'password' ? '1px solid var(--primary)' : '1px solid #eee', 
+                            background: '#fff', 
+                            transition: 'all 0.2s',
+                            display: 'flex',
+                            alignItems: 'center',
+                            position: 'relative'
+                        }}>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 placeholder="Password"
                                 required
                                 value={password} onChange={e => setPassword(e.target.value)}
                                 onFocus={() => setFocusedInput('password')}
                                 onBlur={() => setFocusedInput(null)}
-                                style={{ width: '100%', padding: '15px', borderRadius: '12px', border: 'none', outline: 'none' }}
+                                style={{ width: '100%', padding: '15px', paddingRight: '45px', borderRadius: '12px', border: 'none', outline: 'none' }}
                             />
+                            <div 
+                                onClick={() => setShowPassword(!showPassword)}
+                                style={{ 
+                                    position: 'absolute', 
+                                    right: '15px', 
+                                    cursor: 'pointer', 
+                                    color: '#888',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                {showPassword ? (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                )}
+                            </div>
                         </div>
                     </motion.div>
 
@@ -135,12 +166,36 @@ const Login = () => {
 
                     <motion.button
                         variants={itemVariants}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={!isLoading ? { scale: 1.02 } : {}}
+                        whileTap={!isLoading ? { scale: 0.98 } : {}}
                         type="submit"
                         className="btn-primary"
-                        style={{ padding: '15px', fontSize: '16px', borderRadius: '12px', boxShadow: '0 10px 20px rgba(255, 82, 0, 0.2)' }}>
-                        Login as {role.charAt(0).toUpperCase() + role.slice(1)}
+                        disabled={isLoading}
+                        style={{ 
+                            padding: '15px', 
+                            fontSize: '16px', 
+                            borderRadius: '12px', 
+                            boxShadow: '0 10px 20px rgba(255, 82, 0, 0.2)',
+                            opacity: isLoading ? 0.7 : 1,
+                            cursor: isLoading ? 'not-allowed' : 'pointer',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: '10px'
+                        }}>
+                        {isLoading ? (
+                            <>
+                                <div style={{
+                                    width: '20px',
+                                    height: '20px',
+                                    border: '2px solid white',
+                                    borderTop: '2px solid transparent',
+                                    borderRadius: '50%',
+                                    animation: 'spin 1s linear infinite'
+                                }}></div>
+                                Authenticating...
+                            </>
+                        ) : `Login as ${role.charAt(0).toUpperCase() + role.slice(1)}`}
                     </motion.button>
                 </form>
 
