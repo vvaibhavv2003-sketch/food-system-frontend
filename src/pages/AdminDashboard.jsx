@@ -203,7 +203,7 @@ const AdminDashboard = () => {
                             <i className="fa-solid fa-bullhorn"></i> <span>Marketing</span>
                         </div>
                         <div className={`admin-nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
-                            <i className="fa-solid fa-sliders"></i> <span>Store Settings</span>
+                            <i className="fa-solid fa-sliders"></i> <span>Setting</span>
                         </div>
                         <div className={`admin-nav-link ${activeTab === 'tables' ? 'active' : ''}`} onClick={() => setActiveTab('tables')}>
                             <i className="fa-solid fa-table"></i> <span>Table Management</span>
@@ -264,7 +264,7 @@ const AdminDashboard = () => {
                 </div>
                 <div className={`admin-mobile-tab ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
                     <i className="fa-solid fa-sliders"></i>
-                    <span>Settings</span>
+                    <span>Setting</span>
                 </div>
             </nav>
 
@@ -1078,6 +1078,7 @@ const CategoryManager = ({ categories, addCategory, deleteCategory, updateCatego
 const StoreSettingsManager = ({ storeSettings, updateSettings }) => {
     const [settings, setSettings] = useState(storeSettings || {});
     const [editMode, setEditMode] = useState(false);
+    const [subTab, setSubTab] = useState('general'); // 'general', 'content', 'staff'
 
     // Sync state when props change
     useEffect(() => {
@@ -1097,237 +1098,437 @@ const StoreSettingsManager = ({ storeSettings, updateSettings }) => {
 
     return (
         <div style={{ width: '100%', background: 'white', padding: '30px', borderRadius: '12px', boxShadow: 'var(--shadow-sm)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <h3 style={{ margin: 0, fontSize: '24px' }}>🛠️ Manage Store Settings</h3>
-                <button
-                    type="button"
-                    onClick={() => {
-                        if (editMode) setSettings(storeSettings); // Reset on cancel
-                        setEditMode(!editMode);
-                    }}
-                    style={{
-                        padding: '10px 25px',
-                        background: editMode ? '#f5f5f5' : 'var(--primary)',
-                        color: editMode ? '#333' : 'white',
-                        border: 'none',
-                        borderRadius: '25px',
-                        fontWeight: 'bold',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
-                    }}
-                >
-                    {editMode ? 'Cancel' : 'Edit Details ✏️'}
-                </button>
-            </div>
-            <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '30px' }}>
-                <div style={{ display: 'grid', gap: '20px' }}>
-                    <h4 style={{ margin: '0 0 10px 0', color: 'var(--primary)', borderBottom: '2px solid #f0f0f0', paddingBottom: '10px' }}>General Information</h4>
-                    <div>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Store Name</label>
-                        <input
-                            type="text"
-                            readOnly={!editMode}
-                            value={settings.storeName || ''}
-                            onChange={e => setSettings({ ...settings, storeName: e.target.value })}
-                            style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
-                        />
-                    </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
 
-                    <div className="admin-form-row-2">
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Contact Email</label>
-                            <input
-                                type="email"
-                                readOnly={!editMode}
-                                value={settings.contactEmail || ''}
-                                onChange={e => setSettings({ ...settings, contactEmail: e.target.value })}
-                                style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
-                                placeholder="store@example.com"
-                            />
-                        </div>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Contact Phone</label>
-                            <input
-                                type="tel"
-                                readOnly={!editMode}
-                                value={settings.contactPhone || ''}
-                                onChange={e => setSettings({ ...settings, contactPhone: e.target.value })}
-                                style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
-                                placeholder="+91 9988776655"
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>UPI ID (for payments)</label>
-                        <input
-                            type="text"
-                            readOnly={!editMode}
-                            value={settings.upiId || ''}
-                            onChange={e => setSettings({ ...settings, upiId: e.target.value })}
-                            style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
-                            placeholder="yourname@bank"
-                        />
-                    </div>
-
-                    <div>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Business Address</label>
-                        <textarea
-                            readOnly={!editMode}
-                            value={settings.address || ''}
-                            onChange={e => setSettings({ ...settings, address: e.target.value })}
-                            style={{ ...inputStyle, height: '60px', background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
-                            placeholder="Full address of your store"
-                        />
-                    </div>
-
-                    <div className="admin-form-row-3">
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>GST NO</label>
-                            <input
-                                type="text"
-                                readOnly={!editMode}
-                                value={settings.gstNo || ''}
-                                onChange={e => setSettings({ ...settings, gstNo: e.target.value })}
-                                style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
-                                placeholder="24ABCDE1234F1Z5"
-                            />
-                        </div>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>FSSAI NO</label>
-                            <input
-                                type="text"
-                                readOnly={!editMode}
-                                value={settings.fssaiNo || ''}
-                                onChange={e => setSettings({ ...settings, fssaiNo: e.target.value })}
-                                style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
-                                placeholder="20724034002453"
-                            />
-                        </div>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Tax (%)</label>
-                            <input
-                                type="number"
-                                readOnly={!editMode}
-                                value={settings.taxPercent || 0}
-                                onChange={e => setSettings({ ...settings, taxPercent: Number(e.target.value) })}
-                                style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
-                                placeholder="5"
-                            />
-                        </div>
-                    </div>
-
-                    <div style={{ background: '#f9f9f9', padding: '15px', borderRadius: '8px', border: '1px solid #eee' }}>
-                        <label style={{ display: 'block', marginBottom: '12px', fontWeight: 'bold' }}>🖨️ Printer Configuration</label>
-                        <div style={{ display: 'flex', gap: '20px' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                                <input
-                                    type="radio"
-                                    name="printerType"
-                                    disabled={!editMode}
-                                    value="thermal"
-                                    checked={settings.printerType === 'thermal'}
-                                    onChange={e => setSettings({ ...settings, printerType: e.target.value })}
-                                    style={{ width: '18px', height: '18px', accentColor: 'var(--primary)', cursor: editMode ? 'pointer' : 'default' }}
-                                />
-                                <span>Thermal Printer</span>
-                            </label>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                                <input
-                                    type="radio"
-                                    name="printerType"
-                                    disabled={!editMode}
-                                    value="smart"
-                                    checked={settings.printerType === 'smart'}
-                                    onChange={e => setSettings({ ...settings, printerType: e.target.value })}
-                                    style={{ width: '18px', height: '18px', accentColor: 'var(--primary)', cursor: editMode ? 'pointer' : 'default' }}
-                                />
-                                <span>Smart Printer</span>
-                            </label>
-                        </div>
-                    </div>
-
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <span 
+                        onClick={() => { setSubTab('general'); setEditMode(false); }} 
+                        style={{ cursor: 'pointer', fontWeight: 'bold', color: subTab === 'general' ? 'var(--primary)' : '#888', borderBottom: subTab === 'general' ? '2px solid var(--primary)' : 'none', padding: '5px 10px' }}
+                    >General Information</span>
+                    <span 
+                        onClick={() => { setSubTab('content'); setEditMode(false); }} 
+                        style={{ cursor: 'pointer', fontWeight: 'bold', color: subTab === 'content' ? 'var(--primary)' : '#888', borderBottom: subTab === 'content' ? '2px solid var(--primary)' : 'none', padding: '5px 10px' }}
+                    >Website Content</span>
+                    <span 
+                        onClick={() => setSubTab('staff')} 
+                        style={{ cursor: 'pointer', fontWeight: 'bold', color: subTab === 'staff' ? 'var(--primary)' : '#888', borderBottom: subTab === 'staff' ? '2px solid var(--primary)' : 'none', padding: '5px 10px' }}
+                    >Add Staff</span>
                 </div>
-
-                <div style={{ display: 'grid', gap: '20px' }}>
-                    <h4 style={{ margin: '0 0 10px 0', color: 'var(--primary)', borderBottom: '2px solid #f0f0f0', paddingBottom: '10px' }}>Website Content</h4>
-                    <div>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Hero Title</label>
-                        <input
-                            type="text"
-                            readOnly={!editMode}
-                            value={settings.heroTitle || ''}
-                            onChange={e => setSettings({ ...settings, heroTitle: e.target.value })}
-                            style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
-                            placeholder="e.g. Experience The Taste of Italy"
-                        />
-                    </div>
-
-                    <div>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Hero Subtitle</label>
-                        <textarea
-                            readOnly={!editMode}
-                            value={settings.heroSubtitle || ''}
-                            onChange={e => setSettings({ ...settings, heroSubtitle: e.target.value })}
-                            style={{ ...inputStyle, height: '80px', background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
-                        />
-                    </div>
-
-                    <div>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Hero Background Images (Slider)</label>
-                        {(settings.heroImages || []).map((img, index) => (
-                            <div key={index} style={{ marginBottom: '10px', display: 'flex', gap: '10px' }}>
-                                <input
-                                    type="url"
-                                    readOnly={!editMode}
-                                    value={img}
-                                    onChange={e => {
-                                        const newImages = [...(settings.heroImages || [])];
-                                        newImages[index] = e.target.value;
-                                        setSettings({ ...settings, heroImages: newImages });
-                                    }}
-                                    style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
-                                    placeholder={`Image URL ${index + 1}`}
-                                />
-                                {editMode && (
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            const newImages = settings.heroImages.filter((_, i) => i !== index);
-                                            setSettings({ ...settings, heroImages: newImages });
-                                        }}
-                                        style={{ background: '#ffebeb', color: 'red', border: 'none', borderRadius: '4px', cursor: 'pointer', padding: '0 10px' }}
-                                    >
-                                        &times;
-                                    </button>
-                                )}
-                            </div>
-                        ))}
-                        {editMode && (
-                            <button
-                                type="button"
-                                onClick={() => setSettings({ ...settings, heroImages: [...(settings.heroImages || []), ''] })}
-                                style={{ padding: '8px 12px', background: '#e3f2fd', color: '#2196f3', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px' }}
-                            >
-                                + Add Image
-                            </button>
-                        )}
-
-                        {/* Preview first image */}
-                        {settings.heroImages && settings.heroImages.length > 0 && settings.heroImages[0] && (
-                            <div style={{ marginTop: '10px', height: '150px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #eee' }}>
-                                <img src={settings.heroImages[0]} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {editMode && (
-                    <button type="submit" className="btn-primary" style={{ gridColumn: '1 / -1', padding: '15px', marginTop: '20px', borderRadius: '30px', maxWidth: '300px', margin: '20px auto 0', transition: '0.3s' }}>
-                        Save Changes ✅
+                {subTab !== 'staff' && (
+                    <button
+                        type="button"
+                        onClick={() => {
+                            if (editMode) setSettings(storeSettings); // Reset on cancel
+                            setEditMode(!editMode);
+                        }}
+                        style={{
+                            padding: '10px 25px',
+                            background: editMode ? '#f5f5f5' : 'var(--primary)',
+                            color: editMode ? '#333' : 'white',
+                            border: 'none',
+                            borderRadius: '25px',
+                            fontWeight: 'bold',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+                        }}
+                    >
+                        {editMode ? 'Cancel' : 'Edit Details ✏️'}
                     </button>
                 )}
-            </form>
+            </div>
+
+            {subTab === 'general' && (
+                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '30px' }}>
+                    <div style={{ display: 'grid', gap: '20px' }}>
+                        <h4 style={{ margin: '0 0 10px 0', color: 'var(--primary)', borderBottom: '2px solid #f0f0f0', paddingBottom: '10px' }}>General Information</h4>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Store Name</label>
+                            <input
+                                type="text"
+                                readOnly={!editMode}
+                                value={settings.storeName || ''}
+                                onChange={e => setSettings({ ...settings, storeName: e.target.value })}
+                                style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
+                            />
+                        </div>
+
+                        <div className="admin-form-row-2">
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Contact Email</label>
+                                <input
+                                    type="email"
+                                    readOnly={!editMode}
+                                    value={settings.contactEmail || ''}
+                                    onChange={e => setSettings({ ...settings, contactEmail: e.target.value })}
+                                    style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
+                                    placeholder="store@example.com"
+                                />
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Contact Phone</label>
+                                <input
+                                    type="tel"
+                                    readOnly={!editMode}
+                                    value={settings.contactPhone || ''}
+                                    onChange={e => setSettings({ ...settings, contactPhone: e.target.value })}
+                                    style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
+                                    placeholder="+91 9988776655"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>UPI ID (for payments)</label>
+                            <input
+                                type="text"
+                                readOnly={!editMode}
+                                value={settings.upiId || ''}
+                                onChange={e => setSettings({ ...settings, upiId: e.target.value })}
+                                style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
+                                placeholder="yourname@bank"
+                            />
+                        </div>
+
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Business Address</label>
+                            <textarea
+                                readOnly={!editMode}
+                                value={settings.address || ''}
+                                onChange={e => setSettings({ ...settings, address: e.target.value })}
+                                style={{ ...inputStyle, height: '60px', background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
+                                placeholder="Full address of your store"
+                            />
+                        </div>
+
+                        <div className="admin-form-row-3">
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>GST NO</label>
+                                <input
+                                    type="text"
+                                    readOnly={!editMode}
+                                    value={settings.gstNo || ''}
+                                    onChange={e => setSettings({ ...settings, gstNo: e.target.value })}
+                                    style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
+                                    placeholder="24ABCDE1234F1Z5"
+                                />
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>FSSAI NO</label>
+                                <input
+                                    type="text"
+                                    readOnly={!editMode}
+                                    value={settings.fssaiNo || ''}
+                                    onChange={e => setSettings({ ...settings, fssaiNo: e.target.value })}
+                                    style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
+                                    placeholder="20724034002453"
+                                />
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Tax (%)</label>
+                                <input
+                                    type="number"
+                                    readOnly={!editMode}
+                                    value={settings.taxPercent || 0}
+                                    onChange={e => setSettings({ ...settings, taxPercent: Number(e.target.value) })}
+                                    style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
+                                    placeholder="5"
+                                />
+                            </div>
+                        </div>
+
+                        <div style={{ background: '#f9f9f9', padding: '15px', borderRadius: '8px', border: '1px solid #eee' }}>
+                            <label style={{ display: 'block', marginBottom: '12px', fontWeight: 'bold' }}>🖨️ Printer Configuration</label>
+                            <div style={{ display: 'flex', gap: '20px' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                                    <input
+                                        type="radio"
+                                        name="printerType"
+                                        disabled={!editMode}
+                                        value="thermal"
+                                        checked={settings.printerType === 'thermal'}
+                                        onChange={e => setSettings({ ...settings, printerType: e.target.value })}
+                                        style={{ width: '18px', height: '18px', accentColor: 'var(--primary)', cursor: editMode ? 'pointer' : 'default' }}
+                                    />
+                                    <span>Thermal Printer</span>
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                                    <input
+                                        type="radio"
+                                        name="printerType"
+                                        disabled={!editMode}
+                                        value="smart"
+                                        checked={settings.printerType === 'smart'}
+                                        onChange={e => setSettings({ ...settings, printerType: e.target.value })}
+                                        style={{ width: '18px', height: '18px', accentColor: 'var(--primary)', cursor: editMode ? 'pointer' : 'default' }}
+                                    />
+                                    <span>Smart Printer</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    {editMode && (
+                        <button type="submit" className="btn-primary" style={{ gridColumn: '1 / -1', padding: '15px', marginTop: '20px', borderRadius: '30px', maxWidth: '300px', margin: '20px auto 0', transition: '0.3s' }}>
+                            Save General Info ✅
+                        </button>
+                    )}
+                </form>
+            )}
+
+            {subTab === 'content' && (
+                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '30px' }}>
+                    <div style={{ display: 'grid', gap: '20px' }}>
+                        <h4 style={{ margin: '0 0 10px 0', color: 'var(--primary)', borderBottom: '2px solid #f0f0f0', paddingBottom: '10px' }}>Website Content</h4>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Hero Title</label>
+                            <input
+                                type="text"
+                                readOnly={!editMode}
+                                value={settings.heroTitle || ''}
+                                onChange={e => setSettings({ ...settings, heroTitle: e.target.value })}
+                                style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
+                                placeholder="e.g. Experience The Taste of Italy"
+                            />
+                        </div>
+
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Hero Subtitle</label>
+                            <textarea
+                                readOnly={!editMode}
+                                value={settings.heroSubtitle || ''}
+                                onChange={e => setSettings({ ...settings, heroSubtitle: e.target.value })}
+                                style={{ ...inputStyle, height: '80px', background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
+                            />
+                        </div>
+
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Hero Background Images (Slider)</label>
+                            {(settings.heroImages || []).map((img, index) => (
+                                <div key={index} style={{ marginBottom: '10px', display: 'flex', gap: '10px' }}>
+                                    <input
+                                        type="url"
+                                        readOnly={!editMode}
+                                        value={img}
+                                        onChange={e => {
+                                            const newImages = [...(settings.heroImages || [])];
+                                            newImages[index] = e.target.value;
+                                            setSettings({ ...settings, heroImages: newImages });
+                                        }}
+                                        style={{ ...inputStyle, background: editMode ? 'white' : '#fff', color: '#333', border: editMode ? '1px solid var(--primary)' : '1px solid #eee', cursor: editMode ? 'text' : 'default' }}
+                                        placeholder={`Image URL ${index + 1}`}
+                                    />
+                                    {editMode && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newImages = settings.heroImages.filter((_, i) => i !== index);
+                                                setSettings({ ...settings, heroImages: newImages });
+                                            }}
+                                            style={{ background: '#ffebeb', color: 'red', border: 'none', borderRadius: '4px', cursor: 'pointer', padding: '0 10px' }}
+                                        >
+                                            &times;
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                            {editMode && (
+                                <button
+                                    type="button"
+                                    onClick={() => setSettings({ ...settings, heroImages: [...(settings.heroImages || []), ''] })}
+                                    style={{ padding: '8px 12px', background: '#e3f2fd', color: '#2196f3', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px' }}
+                                >
+                                    + Add Image
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    {editMode && (
+                        <button type="submit" className="btn-primary" style={{ gridColumn: '1 / -1', padding: '15px', marginTop: '20px', borderRadius: '30px', maxWidth: '300px', margin: '20px auto 0', transition: '0.3s' }}>
+                            Save Website Content ✅
+                        </button>
+                    )}
+                </form>
+            )}
+
+            {subTab === 'staff' && <StaffManager />}
+        </div>
+    );
+};
+
+const StaffManager = () => {
+    const [showAddForm, setShowAddForm] = useState(false);
+    const [staffList, setStaffList] = useState([]); // State to store added staff
+    const [staffData, setStaffData] = useState({
+        name: '',
+        lastName: '',
+        email: '',
+        mobile: '',
+        password: '',
+        gender: 'Male',
+        address: '',
+        role: 'Admin'
+    });
+
+    const inputStyle = {
+        width: '100%',
+        padding: '12px 15px',
+        border: '1px solid #eee',
+        borderRadius: '8px',
+        fontSize: '14px',
+        outline: 'none',
+        transition: '0.3s'
+    };
+
+    const handleBack = () => {
+        setShowAddForm(false);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const newStaff = { ...staffData, id: Date.now() };
+        setStaffList([...staffList, newStaff]);
+        alert('Staff added successfully!');
+        setStaffData({
+            name: '',
+            lastName: '',
+            email: '',
+            mobile: '',
+            password: '',
+            gender: 'Male',
+            address: '',
+            role: 'Admin'
+        });
+        setShowAddForm(false);
+    };
+
+    const handleDeleteStaff = (id) => {
+        if (window.confirm('Are you sure you want to remove this staff member?')) {
+            setStaffList(staffList.filter(staff => staff.id !== id));
+        }
+    };
+
+    if (showAddForm) {
+        return (
+            <div style={{ marginTop: '20px', animation: 'fadeIn 0.5s ease' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <h4 style={{ margin: 0, color: 'var(--primary)' }}>Add New Staff Member</h4>
+                    <button onClick={handleBack} style={{ background: '#f5f5f5', border: 'none', padding: '8px 15px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' }}>
+                        ← Back
+                    </button>
+                </div>
+
+                <form onSubmit={handleSubmit} autoComplete="off" style={{ background: 'white', padding: '25px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+                    <div className="admin-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>First Name</label>
+                            <input required type="text" value={staffData.name} onChange={e => setStaffData({...staffData, name: e.target.value})} style={inputStyle} placeholder="First Name" />
+                        </div>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Last Name</label>
+                            <input required type="text" value={staffData.lastName} onChange={e => setStaffData({...staffData, lastName: e.target.value})} style={inputStyle} placeholder="Last Name" />
+                        </div>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Email Address</label>
+                            <input required type="email" autoComplete="one-time-code" value={staffData.email} onChange={e => setStaffData({...staffData, email: e.target.value})} style={inputStyle} placeholder="staff@example.com" />
+                        </div>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Mobile Number</label>
+                            <input required type="tel" value={staffData.mobile} onChange={e => setStaffData({...staffData, mobile: e.target.value})} style={inputStyle} placeholder="+91 0000000000" />
+                        </div>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Password</label>
+                            <input required type="password" autoComplete="new-password" value={staffData.password} onChange={e => setStaffData({...staffData, password: e.target.value})} style={inputStyle} placeholder="Create Password" />
+                        </div>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Gender</label>
+                            <select value={staffData.gender} onChange={e => setStaffData({...staffData, gender: e.target.value})} style={inputStyle}>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div style={{ gridColumn: 'span 2' }}>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Role</label>
+                            <select value={staffData.role} onChange={e => setStaffData({...staffData, role: e.target.value})} style={inputStyle}>
+                                <option value="Admin">Admin</option>
+                                <option value="SubAdmin">SubAdmin</option>
+                                <option value="Delivery Staff">Delivery Staff</option>
+                                <option value="Cook staff">Cook Staff</option>
+                                <option value="clening staff">Cleaning Staff</option>
+                            </select>
+                        </div>
+                        <div style={{ gridColumn: 'span 2' }}>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Address</label>
+                            <textarea value={staffData.address} onChange={e => setStaffData({...staffData, address: e.target.value})} style={{ ...inputStyle, height: '80px' }} placeholder="Full Residence Address" />
+                        </div>
+                    </div>
+                    <button type="submit" className="btn-primary" style={{ marginTop: '25px', padding: '15px 30px', borderRadius: '30px', width: '220px', margin: '25px auto 0', display: 'block' }}>
+                        Save Staff Details ✅
+                    </button>
+                </form>
+            </div>
+        );
+    }
+
+    return (
+        <div style={{ marginTop: '20px', animation: 'fadeIn 0.5s ease' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '2px solid #f0f0f0', paddingBottom: '10px' }}>
+                <h4 style={{ margin: 0, color: 'var(--primary)' }}>Staff Management</h4>
+                <button onClick={() => setShowAddForm(true)} className="btn-primary" style={{ padding: '8px 20px', borderRadius: '20px', fontSize: '14px' }}>
+                    + Add Staff Member
+                </button>
+            </div>
+
+            {staffList.length === 0 ? (
+                <div style={{ background: '#f9f9f9', padding: '30px', borderRadius: '12px', textAlign: 'center' }}>
+                    <i className="fa-solid fa-users-gear" style={{ fontSize: '48px', color: '#ccc', marginBottom: '20px' }}></i>
+                    <h3>No Staff Members Yet</h3>
+                    <p style={{ color: '#666', maxWidth: '400px', margin: '0 auto 20px' }}>Click the button above to add your first staff member.</p>
+                </div>
+            ) : (
+                <div style={{ overflowX: 'auto', background: 'white', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                        <thead>
+                            <tr style={{ background: '#f8f9fa', borderBottom: '1px solid #eee' }}>
+                                <th style={{ padding: '15px' }}>Name</th>
+                                <th style={{ padding: '15px' }}>Role</th>
+                                <th style={{ padding: '15px' }}>Email</th>
+                                <th style={{ padding: '15px' }}>Mobile</th>
+                                <th style={{ padding: '15px' }}>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {staffList.map((staff) => (
+                                <tr key={staff.id} style={{ borderBottom: '1px solid #eee' }}>
+                                    <td style={{ padding: '15px' }}>{staff.name} {staff.lastName}</td>
+                                    <td style={{ padding: '15px' }}>
+                                        <span style={{ 
+                                            padding: '4px 10px', 
+                                            borderRadius: '12px', 
+                                            fontSize: '12px', 
+                                            fontWeight: 'bold',
+                                            background: '#e3f2fd',
+                                            color: '#1976d2'
+                                        }}>
+                                            {staff.role}
+                                        </span>
+                                    </td>
+                                    <td style={{ padding: '15px' }}>{staff.email}</td>
+                                    <td style={{ padding: '15px' }}>{staff.mobile}</td>
+                                    <td style={{ padding: '15px' }}>
+                                        <button 
+                                            onClick={() => handleDeleteStaff(staff.id)}
+                                            style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', fontSize: '16px' }}
+                                            title="Delete Staff"
+                                        >
+                                            <i className="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
 };

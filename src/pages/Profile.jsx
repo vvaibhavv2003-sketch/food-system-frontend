@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
     const { user, updateProfile } = useAuth();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: user?.name || '',
@@ -52,9 +54,36 @@ const Profile = () => {
                     background: 'white',
                     padding: '40px',
                     borderRadius: '24px',
-                    boxShadow: '0 10px 40px rgba(0,0,0,0.05)'
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.05)',
+                    position: 'relative'
                 }}
             >
+                {/* Back Button */}
+                <button
+                    onClick={() => navigate(-1)}
+                    style={{
+                        position: 'absolute',
+                        top: '25px',
+                        left: '25px',
+                        border: 'none',
+                        background: '#f8f9fa',
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        color: '#666',
+                        transition: 'all 0.2s',
+                        boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = '#eee'; e.currentTarget.style.color = '#333'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = '#f8f9fa'; e.currentTarget.style.color = '#666'; }}
+                >
+                    <i className="fa-solid fa-arrow-left"></i>
+                </button>
+
                 <div style={{ textAlign: 'center', marginBottom: '30px' }}>
                     <div style={{
                         width: '100px', height: '100px', borderRadius: '50%',

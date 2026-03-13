@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -17,6 +17,8 @@ const Navbar = ({ cartCount, toggleCart }) => {
     const { user, logout } = useAuth();
     const { storeSettings } = useStore();
     const navigate = useNavigate();
+    const location = useLocation();
+    const isHomePage = location.pathname === '/';
 
     // Handle Scroll and Resize
     useEffect(() => {
@@ -64,7 +66,8 @@ const Navbar = ({ cartCount, toggleCart }) => {
         }
     };
 
-    const textColor = (scrolled || isMobileMenuOpen) ? '#333' : 'white';
+    const isDarkNavbar = scrolled || isMobileMenuOpen || !isHomePage;
+    const textColor = isDarkNavbar ? '#333' : 'white';
 
     // Typewriter effect state
     const [isVisible, setIsVisible] = useState(true);
@@ -83,7 +86,7 @@ const Navbar = ({ cartCount, toggleCart }) => {
 
     return (
         <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`} style={{
-            backgroundColor: scrolled || isMobileMenuOpen ? 'rgba(255, 255, 255, 0.95)' : 'transparent',
+            backgroundColor: (scrolled || isMobileMenuOpen) ? 'rgba(255, 255, 255, 0.95)' : 'transparent',
             backdropFilter: (scrolled || isMobileMenuOpen) ? 'blur(10px)' : 'none',
         }}>
             {/* Logo */}

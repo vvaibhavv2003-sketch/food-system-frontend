@@ -123,6 +123,32 @@ const Signup = () => {
                         overflow: 'hidden'
                     }}>
 
+                    {/* Back Button */}
+                    <button
+                        onClick={() => navigate(-1)}
+                        style={{
+                            position: 'absolute',
+                            top: '20px',
+                            left: '20px',
+                            border: 'none',
+                            background: '#f5f5f5',
+                            width: '35px',
+                            height: '35px',
+                            borderRadius: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            color: '#666',
+                            zIndex: 10,
+                            transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = '#eee'; e.currentTarget.style.color = '#333'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = '#f5f5f5'; e.currentTarget.style.color = '#666'; }}
+                    >
+                        <i className="fa-solid fa-arrow-left"></i>
+                    </button>
+
                     {/* Decorative Top Bar */}
                     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '6px', background: 'linear-gradient(90deg, var(--primary), #ff9a44)' }}></div>
 
