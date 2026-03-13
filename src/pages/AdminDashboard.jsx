@@ -1097,21 +1097,20 @@ const StoreSettingsManager = ({ storeSettings, updateSettings }) => {
     };
 
     return (
-        <div style={{ width: '100%', background: 'white', padding: '30px', borderRadius: '12px', boxShadow: 'var(--shadow-sm)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
-
-                <div style={{ display: 'flex', gap: '10px' }}>
+        <div className="admin-settings-card">
+            <div className="admin-tabs-container">
+                <div className="admin-tabs-list">
                     <span 
                         onClick={() => { setSubTab('general'); setEditMode(false); }} 
-                        style={{ cursor: 'pointer', fontWeight: 'bold', color: subTab === 'general' ? 'var(--primary)' : '#888', borderBottom: subTab === 'general' ? '2px solid var(--primary)' : 'none', padding: '5px 10px' }}
+                        style={{ cursor: 'pointer', fontWeight: 'bold', color: subTab === 'general' ? 'var(--primary)' : '#888', borderBottom: subTab === 'general' ? '2px solid var(--primary)' : 'none' }}
                     >General Information</span>
                     <span 
                         onClick={() => { setSubTab('content'); setEditMode(false); }} 
-                        style={{ cursor: 'pointer', fontWeight: 'bold', color: subTab === 'content' ? 'var(--primary)' : '#888', borderBottom: subTab === 'content' ? '2px solid var(--primary)' : 'none', padding: '5px 10px' }}
+                        style={{ cursor: 'pointer', fontWeight: 'bold', color: subTab === 'content' ? 'var(--primary)' : '#888', borderBottom: subTab === 'content' ? '2px solid var(--primary)' : 'none' }}
                     >Website Content</span>
                     <span 
                         onClick={() => setSubTab('staff')} 
-                        style={{ cursor: 'pointer', fontWeight: 'bold', color: subTab === 'staff' ? 'var(--primary)' : '#888', borderBottom: subTab === 'staff' ? '2px solid var(--primary)' : 'none', padding: '5px 10px' }}
+                        style={{ cursor: 'pointer', fontWeight: 'bold', color: subTab === 'staff' ? 'var(--primary)' : '#888', borderBottom: subTab === 'staff' ? '2px solid var(--primary)' : 'none' }}
                     >Add Staff</span>
                 </div>
                 {subTab !== 'staff' && (
@@ -1416,8 +1415,8 @@ const StaffManager = () => {
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} autoComplete="off" style={{ background: 'white', padding: '25px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
-                    <div className="admin-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <form onSubmit={handleSubmit} autoComplete="off" style={{ background: 'white', padding: 'var(--card-padding, 20px)', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+                    <div className="admin-form-grid" style={{ gap: '20px' }}>
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>First Name</label>
                             <input required type="text" value={staffData.name} onChange={e => setStaffData({...staffData, name: e.target.value})} style={inputStyle} placeholder="First Name" />
@@ -1471,7 +1470,7 @@ const StaffManager = () => {
 
     return (
         <div style={{ marginTop: '20px', animation: 'fadeIn 0.5s ease' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '2px solid #f0f0f0', paddingBottom: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '2px solid #f0f0f0', paddingBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
                 <h4 style={{ margin: 0, color: 'var(--primary)' }}>Staff Management</h4>
                 <button onClick={() => setShowAddForm(true)} className="btn-primary" style={{ padding: '8px 20px', borderRadius: '20px', fontSize: '14px' }}>
                     + Add Staff Member
@@ -1485,7 +1484,7 @@ const StaffManager = () => {
                     <p style={{ color: '#666', maxWidth: '400px', margin: '0 auto 20px' }}>Click the button above to add your first staff member.</p>
                 </div>
             ) : (
-                <div style={{ overflowX: 'auto', background: 'white', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+                <div className="admin-table-wrapper" style={{ background: 'white', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                         <thead>
                             <tr style={{ background: '#f8f9fa', borderBottom: '1px solid #eee' }}>
