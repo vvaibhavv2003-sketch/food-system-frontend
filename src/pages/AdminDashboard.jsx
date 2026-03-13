@@ -1359,7 +1359,18 @@ const StoreSettingsManager = ({ storeSettings, updateSettings }) => {
 
 const StaffManager = () => {
     const [showAddForm, setShowAddForm] = useState(false);
-    const [staffList, setStaffList] = useState([]); // State to store added staff
+    
+    // Initialize staffList from localStorage if available
+    const [staffList, setStaffList] = useState(() => {
+        const savedStaff = localStorage.getItem('toastyStaff');
+        return savedStaff ? JSON.parse(savedStaff) : [];
+    });
+
+    // Save staffList to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('toastyStaff', JSON.stringify(staffList));
+    }, [staffList]);
+
     const [showPassword, setShowPassword] = useState(false); // Password visibility toggle
     const [staffData, setStaffData] = useState({
         name: '',
@@ -1395,7 +1406,10 @@ const StaffManager = () => {
         return /^\d{10}$/.test(mobile);
     };
 
-    const handleSubmit = (e) => {
+    const { register } = useAuth();
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Validation
@@ -1412,21 +1426,45 @@ const StaffManager = () => {
             return;
         }
 
-        const newStaff = { ...staffData, id: Date.now() };
-        setStaffList([...staffList, newStaff]);
-        alert('Staff added successfully!');
-        setStaffData({
-            name: '',
-            lastName: '',
-            email: '',
-            mobile: '',
-            password: '',
-            gender: 'Male',
-            address: '',
-            role: 'Admin'
-        });
-        setShowAddForm(false);
-        setShowPassword(false);
+        setLoading(true);
+        try {
+            // Attempt to register staff on the server
+            const registerResult = await register({
+                name: `${staffData.name} ${staffData.lastName}`,
+                email: staffData.email,
+                mobile: staffData.mobile,
+                password: staffData.password,
+                role: staffData.role // Pass the chosen staff role
+            });
+
+            if (registerResult.success) {
+                const newStaff = { ...staffData, id: Date.now() };
+                setStaffList([...staffList, newStaff]);
+                alert('Staff account created and stored successfully! ✅');
+                setStaffData({
+                    name: '',
+                    lastName: '',
+                    email: '',
+                    mobile: '',
+                    password: '',
+                    gender: 'Male',
+                    address: '',
+                    role: 'Admin'
+                });
+                setShowAddForm(false);
+                setShowPassword(false);
+            } else {
+                alert(`Error: ${registerResult.message}`);
+            }
+        } catch (error) {
+            alert('Cloud registration failed, but staff saved locally.');
+            // Still save locally as a fallback
+            const newStaff = { ...staffData, id: Date.now() };
+            setStaffList([...staffList, newStaff]);
+            setShowAddForm(false);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleDeleteStaff = (id) => {
@@ -1503,8 +1541,22 @@ const StaffManager = () => {
                             <textarea value={staffData.address} onChange={e => setStaffData({...staffData, address: e.target.value})} style={{ ...inputStyle, height: '80px' }} placeholder="Full Residence Address" />
                         </div>
                     </div>
-                    <button type="submit" className="btn-primary" style={{ marginTop: '25px', padding: '15px 30px', borderRadius: '30px', width: '220px', margin: '25px auto 0', display: 'block' }}>
-                        Save Staff Details ✅
+                    <button 
+                        type="submit" 
+                        className="btn-primary" 
+                        disabled={loading}
+                        style={{ 
+                            marginTop: '25px', 
+                            padding: '15px 30px', 
+                            borderRadius: '30px', 
+                            width: '220px', 
+                            margin: '25px auto 0', 
+                            display: 'block',
+                            opacity: loading ? 0.7 : 1,
+                            cursor: loading ? 'not-allowed' : 'pointer'
+                        }}
+                    >
+                        {loading ? 'Processing...' : 'Save Staff Details ✅'}
                     </button>
                 </form>
             </div>
