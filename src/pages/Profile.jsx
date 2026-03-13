@@ -4,13 +4,22 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-    const { user, updateProfile } = useAuth();
+    const { user, updateProfile, changePassword } = useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [showPass, setShowPass] = useState(false);
+    const [showNewPass, setShowNewPass] = useState(false);
+    
     const [formData, setFormData] = useState({
         name: user?.name || '',
         email: user?.email || '',
         mobile: user?.mobile || '',
+    });
+
+    const [passwordData, setPasswordData] = useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
     });
 
     // Update form when user data is finally available or updated
@@ -28,8 +37,19 @@ const Profile = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handlePasswordChangeInput = (e) => {
+        setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // Validation
+        if (formData.mobile && !/^\d{10}$/.test(formData.mobile)) {
+            alert('Please enter a valid 10-digit mobile number');
+            return;
+        }
+
         setLoading(true);
         const res = await updateProfile({ name: formData.name, mobile: formData.mobile });
         setLoading(false);
@@ -41,126 +61,181 @@ const Profile = () => {
         }
     };
 
+    const handleUpdatePassword = async (e) => {
+        e.preventDefault();
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            alert('New passwords do not match');
+            return;
+        }
+        if (passwordData.newPassword.length < 6) {
+            alert('New password must be at least 6 characters long');
+            return;
+        }
+
+        setLoading(true);
+        const res = await changePassword({
+            oldPassword: passwordData.currentPassword,
+            newPassword: passwordData.newPassword
+        });
+        setLoading(false);
+
+        if (res.success) {
+            alert('Password changed successfully!');
+            setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        } else {
+            alert(res.message || 'Failed to change password');
+        }
+    };
+
     if (!user) return <div style={{ padding: '150px', textAlign: 'center' }}>Please login to view profile.</div>;
 
     return (
-        <div style={{ background: '#f8f9fa', minHeight: '100vh', padding: '120px 5% 50px' }}>
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                style={{
-                    maxWidth: '600px',
-                    margin: '0 auto',
-                    background: 'white',
-                    padding: '40px',
-                    borderRadius: '24px',
-                    boxShadow: '0 10px 40px rgba(0,0,0,0.05)',
-                    position: 'relative'
-                }}
-            >
-                {/* Back Button */}
-                <button
-                    onClick={() => navigate(-1)}
+        <div className="profile-page" style={{ background: '#f8f9fa', minHeight: '100vh', padding: '100px 5% 50px' }}>
+            <div className="profile-container" style={{ maxWidth: '800px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '30px' }}>
+                
+                {/* Profile Information Block */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     style={{
-                        position: 'absolute',
-                        top: '25px',
-                        left: '25px',
-                        border: 'none',
-                        background: '#f8f9fa',
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        color: '#666',
-                        transition: 'all 0.2s',
-                        boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
+                        background: 'white',
+                        padding: 'clamp(20px, 5vw, 40px)',
+                        borderRadius: '24px',
+                        boxShadow: '0 10px 40px rgba(0,0,0,0.05)',
+                        position: 'relative'
                     }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = '#eee'; e.currentTarget.style.color = '#333'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = '#f8f9fa'; e.currentTarget.style.color = '#666'; }}
                 >
-                    <i className="fa-solid fa-arrow-left"></i>
-                </button>
-
-                <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-                    <div style={{
-                        width: '100px', height: '100px', borderRadius: '50%',
-                        background: 'var(--primary)', color: 'white',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '40px', fontWeight: 'bold', margin: '0 auto 15px'
-                    }}>
-                        {user.name.charAt(0).toUpperCase()}
-                    </div>
-                    <h2 style={{ fontSize: '28px', fontWeight: '800' }}>Account Settings</h2>
-                    <p style={{ color: '#888' }}>Manage your profile information</p>
-                </div>
-
-                <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '20px' }}>
-                    <div>
-                        <label style={labelStyle}>Full Name</label>
-                        <input
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            style={inputStyle}
-                        />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Email Address</label>
-                        <input
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            style={inputStyle}
-                            disabled
-                        />
-                        <small style={{ color: '#999', marginTop: '5px', display: 'block' }}>Email cannot be changed.</small>
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Mobile Number</label>
-                        <input
-                            name="mobile"
-                            value={formData.mobile}
-                            onChange={handleChange}
-                            style={inputStyle}
-                        />
-                    </div>
-
+                    {/* Back Button */}
                     <button
-                        type="submit"
-                        className="btn-primary"
-                        disabled={loading}
+                        onClick={() => navigate(-1)}
                         style={{
-                            padding: '15px',
-                            marginTop: '10px',
-                            borderRadius: '12px',
-                            opacity: loading ? 0.7 : 1,
-                            cursor: loading ? 'not-allowed' : 'pointer'
+                            position: 'absolute',
+                            top: '20px',
+                            left: '20px',
+                            border: 'none',
+                            background: '#f8f9fa',
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            color: '#666',
+                            zIndex: 10
                         }}
                     >
-                        {loading ? 'Updating...' : 'Update Profile'}
+                        <i className="fa-solid fa-arrow-left"></i>
                     </button>
-                </form>
 
-                <div style={{ marginTop: '40px', paddingTop: '30px', borderTop: '1px solid #eee' }}>
-                    <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#e74c3c', marginBottom: '10px' }}>Danger Zone</h3>
-                    <p style={{ fontSize: '14px', color: '#888', marginBottom: '15px' }}>Deleting your account is permanent and cannot be undone.</p>
-                    <button style={{
-                        padding: '10px 20px',
-                        border: '1px solid #e74c3c',
-                        color: '#e74c3c',
-                        background: 'transparent',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        fontWeight: '600'
-                    }}>
-                        Deactivate Account
+                    <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+                        <div style={{
+                            width: '80px', height: '80px', borderRadius: '50%',
+                            background: 'var(--primary)', color: 'white',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: '32px', fontWeight: 'bold', margin: '0 auto 15px'
+                        }}>
+                            {user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <h2 style={{ fontSize: '24px', fontWeight: '800' }}>Account Details</h2>
+                        <p style={{ color: '#888', fontSize: '14px' }}>Update your personal information</p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '20px' }}>
+                        <div>
+                            <label style={labelStyle}>Full Name</label>
+                            <input name="name" value={formData.name} onChange={handleChange} style={inputStyle} placeholder="Enter full name" />
+                        </div>
+                        <div>
+                            <label style={labelStyle}>Email Address</label>
+                            <input name="email" value={formData.email} style={{ ...inputStyle, background: '#f5f5f5', cursor: 'not-allowed' }} disabled />
+                        </div>
+                        <div>
+                            <label style={labelStyle}>Mobile Number</label>
+                            <input name="mobile" value={formData.mobile} onChange={handleChange} style={inputStyle} placeholder="10-digit mobile" />
+                        </div>
+
+                        <button type="submit" className="btn-primary" disabled={loading} style={{ padding: '14px', marginTop: '10px', borderRadius: '12px' }}>
+                            {loading ? 'Updating...' : 'Save Changes'}
+                        </button>
+                    </form>
+                </motion.div>
+
+                {/* Password Change Block */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    style={{
+                        background: 'white',
+                        padding: 'clamp(20px, 5vw, 40px)',
+                        borderRadius: '24px',
+                        boxShadow: '0 10px 40px rgba(0,0,0,0.05)'
+                    }}
+                >
+                    <div style={{ marginBottom: '25px' }}>
+                        <h3 style={{ fontSize: '20px', fontWeight: '800' }}>Change Password</h3>
+                        <p style={{ color: '#888', fontSize: '14px' }}>Secure your account with a new password</p>
+                    </div>
+
+                    <form onSubmit={handleUpdatePassword} style={{ display: 'grid', gap: '15px' }}>
+                        <div style={{ position: 'relative' }}>
+                            <label style={labelStyle}>Current Password</label>
+                            <input 
+                                type={showPass ? "text" : "password"} 
+                                name="currentPassword" 
+                                value={passwordData.currentPassword} 
+                                onChange={handlePasswordChangeInput} 
+                                style={{ ...inputStyle, paddingRight: '45px' }} 
+                                required 
+                            />
+                            <i 
+                                className={`fa-solid ${showPass ? 'fa-eye-slash' : 'fa-eye'}`} 
+                                onClick={() => setShowPass(!showPass)}
+                                style={{ position: 'absolute', right: '15px', top: '38px', cursor: 'pointer', color: '#888' }}
+                            ></i>
+                        </div>
+                        <div style={{ position: 'relative' }}>
+                            <label style={labelStyle}>New Password</label>
+                            <input 
+                                type={showNewPass ? "text" : "password"} 
+                                name="newPassword" 
+                                value={passwordData.newPassword} 
+                                onChange={handlePasswordChangeInput} 
+                                style={{ ...inputStyle, paddingRight: '45px' }} 
+                                required 
+                            />
+                            <i 
+                                className={`fa-solid ${showNewPass ? 'fa-eye-slash' : 'fa-eye'}`} 
+                                onClick={() => setShowNewPass(!showNewPass)}
+                                style={{ position: 'absolute', right: '15px', top: '38px', cursor: 'pointer', color: '#888' }}
+                            ></i>
+                        </div>
+                        <div>
+                            <label style={labelStyle}>Confirm New Password</label>
+                            <input 
+                                type="password" 
+                                name="confirmPassword" 
+                                value={passwordData.confirmPassword} 
+                                onChange={handlePasswordChangeInput} 
+                                style={inputStyle} 
+                                required 
+                            />
+                        </div>
+
+                        <button type="submit" className="btn-primary" disabled={loading} style={{ padding: '14px', marginTop: '10px', borderRadius: '12px', background: '#333' }}>
+                            Update Password
+                        </button>
+                    </form>
+                </motion.div>
+
+                {/* Danger Zone */}
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                    <button style={{ color: '#e74c3c', background: 'none', border: 'none', fontWeight: '700', cursor: 'pointer' }}>
+                        <i className="fa-solid fa-trash-can"></i> Deactivate My Account
                     </button>
                 </div>
-            </motion.div>
+            </div>
         </div>
     );
 };

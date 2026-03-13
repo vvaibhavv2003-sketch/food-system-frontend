@@ -266,6 +266,10 @@ const AdminDashboard = () => {
                     <i className="fa-solid fa-sliders"></i>
                     <span>Setting</span>
                 </div>
+                <div className="admin-mobile-tab" onClick={logout} style={{ color: '#e74c3c' }}>
+                    <i className="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </div>
             </nav>
 
             <div className="admin-main-container">
@@ -1356,6 +1360,7 @@ const StoreSettingsManager = ({ storeSettings, updateSettings }) => {
 const StaffManager = () => {
     const [showAddForm, setShowAddForm] = useState(false);
     const [staffList, setStaffList] = useState([]); // State to store added staff
+    const [showPassword, setShowPassword] = useState(false); // Password visibility toggle
     const [staffData, setStaffData] = useState({
         name: '',
         lastName: '',
@@ -1379,10 +1384,34 @@ const StaffManager = () => {
 
     const handleBack = () => {
         setShowAddForm(false);
+        setShowPassword(false);
+    };
+
+    const validateEmail = (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    };
+
+    const validateMobile = (mobile) => {
+        return /^\d{10}$/.test(mobile);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Validation
+        if (!validateEmail(staffData.email)) {
+            alert('Please enter a valid email address');
+            return;
+        }
+        if (!validateMobile(staffData.mobile)) {
+            alert('Please enter a valid 10-digit mobile number');
+            return;
+        }
+        if (staffData.password.length < 6) {
+            alert('Password must be at least 6 characters long');
+            return;
+        }
+
         const newStaff = { ...staffData, id: Date.now() };
         setStaffList([...staffList, newStaff]);
         alert('Staff added successfully!');
@@ -1397,6 +1426,7 @@ const StaffManager = () => {
             role: 'Admin'
         });
         setShowAddForm(false);
+        setShowPassword(false);
     };
 
     const handleDeleteStaff = (id) => {
@@ -1416,7 +1446,7 @@ const StaffManager = () => {
                 </div>
 
                 <form onSubmit={handleSubmit} autoComplete="off" style={{ background: 'white', padding: 'var(--card-padding, 20px)', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
-                    <div className="admin-form-grid" style={{ gap: '20px' }}>
+                    <div className="admin-form-grid">
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>First Name</label>
                             <input required type="text" value={staffData.name} onChange={e => setStaffData({...staffData, name: e.target.value})} style={inputStyle} placeholder="First Name" />
@@ -1431,11 +1461,24 @@ const StaffManager = () => {
                         </div>
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Mobile Number</label>
-                            <input required type="tel" value={staffData.mobile} onChange={e => setStaffData({...staffData, mobile: e.target.value})} style={inputStyle} placeholder="+91 0000000000" />
+                            <input required type="tel" value={staffData.mobile} onChange={e => setStaffData({...staffData, mobile: e.target.value})} style={inputStyle} placeholder="10-digit mobile" maxLength="10" />
                         </div>
-                        <div>
+                        <div style={{ position: 'relative' }}>
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Password</label>
-                            <input required type="password" autoComplete="new-password" value={staffData.password} onChange={e => setStaffData({...staffData, password: e.target.value})} style={inputStyle} placeholder="Create Password" />
+                            <input 
+                                required 
+                                type={showPassword ? "text" : "password"} 
+                                autoComplete="new-password" 
+                                value={staffData.password} 
+                                onChange={e => setStaffData({...staffData, password: e.target.value})} 
+                                style={{ ...inputStyle, paddingRight: '45px' }} 
+                                placeholder="Create Password" 
+                            />
+                            <i 
+                                className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`} 
+                                onClick={() => setShowPassword(!showPassword)}
+                                style={{ position: 'absolute', right: '15px', top: '40px', cursor: 'pointer', color: '#888' }}
+                            ></i>
                         </div>
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Gender</label>
@@ -1445,7 +1488,7 @@ const StaffManager = () => {
                                 <option value="Other">Other</option>
                             </select>
                         </div>
-                        <div style={{ gridColumn: 'span 2' }}>
+                        <div className="admin-form-full">
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Role</label>
                             <select value={staffData.role} onChange={e => setStaffData({...staffData, role: e.target.value})} style={inputStyle}>
                                 <option value="Admin">Admin</option>
@@ -1455,7 +1498,7 @@ const StaffManager = () => {
                                 <option value="clening staff">Cleaning Staff</option>
                             </select>
                         </div>
-                        <div style={{ gridColumn: 'span 2' }}>
+                        <div className="admin-form-full">
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Address</label>
                             <textarea value={staffData.address} onChange={e => setStaffData({...staffData, address: e.target.value})} style={{ ...inputStyle, height: '80px' }} placeholder="Full Residence Address" />
                         </div>

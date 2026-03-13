@@ -78,6 +78,16 @@
     gap: 20px;
 }
 
+.admin-form-full {
+    grid-column: span 2;
+}
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
 .admin-form-row-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -306,6 +316,10 @@
     .admin-form-row-3 {
         grid-template-columns: 1fr !important;
         gap: 15px !important;
+    }
+
+    .admin-form-full {
+        grid-column: span 1 !important;
     }
 
     .admin-card-grid {
