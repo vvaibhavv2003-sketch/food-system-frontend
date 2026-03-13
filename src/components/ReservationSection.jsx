@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { API_BOOKINGS, API_BOOKINGS_STATUS } from '../config/apiConfig';
+import { useAuth } from '../context/AuthContext';
 
 import './ReservationSection.css';
 
 const ReservationSection = () => {
+    const { user } = useAuth();
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        mobile: '',
+        name: user?.name || '',
+        email: user?.email || '',
+        mobile: user?.mobile || '',
         date: '',
         guests: '2 People',
         time: '',
@@ -17,9 +19,21 @@ const ReservationSection = () => {
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    // Sync user data if login state changes
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                name: user.name || prev.name,
+                email: user.email || prev.email,
+                mobile: user.mobile || prev.mobile
+            }));
+        }
+    }, [user]);
+
     useEffect(() => {
         fetchStatuses();
-        const interval = setInterval(fetchStatuses, 10000); // Poll every 10s
+        const interval = setInterval(fetchStatuses, 15000); // Poll every 15s
         return () => clearInterval(interval);
     }, [formData.date]);
 
@@ -27,17 +41,26 @@ const ReservationSection = () => {
         try {
             const dateStr = formData.date || new Date().toISOString().split('T')[0];
             const res = await fetch(API_BOOKINGS_STATUS(dateStr));
+            if (!res.ok) throw new Error('Failed to fetch status');
             const data = await res.json();
-            setTables(data);
+            if (Array.isArray(data)) {
+                setTables(data);
+            }
         } catch (error) {
             console.error('Error fetching table statuses:', error);
-            // Default 12 tables if backend fails
-            const defaultTables = Array.from({ length: 12 }, (_, i) => ({
-                number: i + 1,
-                status: 'Available'
-            }));
-            setTables(defaultTables);
+            if (tables.length === 0) {
+                // Default 12 tables only if we have NO data at all
+                const defaultTables = Array.from({ length: 12 }, (_, i) => ({
+                    number: i + 1,
+                    status: 'Available'
+                }));
+                setTables(defaultTables);
+            }
         }
+    };
+
+    const validateMobile = (mob) => {
+        return /^\d{10}$/.test(mob);
     };
 
     const handleChange = (e) => {
@@ -46,7 +69,7 @@ const ReservationSection = () => {
 
     const handleTableSelect = (num) => {
         const table = tables.find(t => t.number === num);
-        if (table.status !== 'Available') return;
+        if (table && table.status !== 'Available') return;
         setFormData({ ...formData, tableNumber: num });
     };
 
@@ -58,33 +81,49 @@ const ReservationSection = () => {
             return;
         }
 
+        if (!validateMobile(formData.mobile)) {
+            alert('Please enter a valid 10-digit mobile number for booking.');
+            return;
+        }
+
         setLoading(true);
 
         try {
             const res = await fetch(API_BOOKINGS, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({
+                    ...formData,
+                    userId: user?._id // Add userId if available
+                })
             });
 
             const data = await res.json();
             if (res.ok) {
-                alert(`Success! ₹100 Booking Charge Applied. ${data.message}`);
+                alert(`SUCCESS! ✅\n\nTable ${formData.tableNumber} is reserved for you.\nNote: ₹100 booking charge will be added to your bill.`);
+                
+                // Clear personal info but KEEP date and table selection visual if needed, 
+                // OR just reset nicely but keep the user on the current date
+                const currentDate = formData.date;
                 setFormData({
-                    name: '',
-                    email: '',
-                    mobile: '',
-                    date: '',
+                    name: user?.name || '',
+                    email: user?.email || '',
+                    mobile: user?.mobile || '',
+                    date: currentDate, // Keep the date!
                     guests: '2 People',
                     time: '',
                     tableNumber: null
                 });
-                fetchStatuses(); // Refresh table statuses
+                
+                // Immediate refresh of statuses
+                setTimeout(fetchStatuses, 500); 
             } else {
-                alert(data.message || 'Booking failed');
+                alert(data.message || 'This table might have been booked just now. Please try another.');
+                fetchStatuses();
             }
         } catch (error) {
-            alert('Server error: Failed to book table');
+            console.error('Booking Error:', error);
+            alert('Connection Error: Your reservation could not be confirmed. Please check your internet and try again.');
         } finally {
             setLoading(false);
         }
