@@ -15,7 +15,7 @@ const Signup = () => {
     const [focusedInput, setFocusedInput] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    
+
     const { register, verifyOtp } = useAuth();
     const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ const Signup = () => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        
+
         // Mobile Validation
         if (mobile.length !== 10) {
             alert('Please enter a valid 10-digit mobile number.');
@@ -41,24 +41,24 @@ const Signup = () => {
         const result = await register(userData);
         if (result.success) {
             // OTP verification bypass logic
-            if (result.otp) {
-                const verifyResult = await verifyOtp(mobile, result.otp, userData);
-                if (verifyResult.success) {
-                    alert('Registration Successful! Welcome.');
-                    if (role === 'admin') navigate('/admin');
-                    else if (role === 'delivery') navigate('/delivery');
-                    else navigate('/');
-                } else {
-                    alert(verifyResult.message);
-                }
-            } else {
-                // Original OTP flow (commented out)
-                /*
-                alert('OTP sent to your email address.');
-                setStep(2);
-                */
-                alert('Registration submitted. OTP verification may be required.');
-            }
+            // if (result.otp) {
+            // const verifyResult = await verifyOtp(mobile, result.otp, userData);
+            alert('Registration Successful! Welcome.');
+            // if (verifyResult.success) {
+            //     if (role === 'admin') navigate('/admin');
+            //     else if (role === 'delivery') navigate('/delivery');
+            //     else navigate('/');
+            // } else {
+            //     alert(verifyResult.message);
+            // }
+            // } else {
+            // Original OTP flow (commented out)
+            /*
+            alert('OTP sent to your email address.');
+            setStep(2);
+            */
+            // alert('Registration submitted. OTP verification may be required.');
+            // }
         } else {
             alert(result.message);
         }
@@ -197,7 +197,7 @@ const Signup = () => {
                                         type="tel"
                                         placeholder="Mobile Number (10 digits)"
                                         required
-                                        value={mobile} 
+                                        value={mobile}
                                         onChange={handleMobileChange}
                                         onFocus={() => setFocusedInput('mobile')}
                                         onBlur={() => setFocusedInput(null)}
@@ -207,10 +207,10 @@ const Signup = () => {
                             </motion.div>
 
                             <motion.div variants={itemVariants}>
-                                <div style={{ 
-                                    borderRadius: '12px', 
-                                    border: focusedInput === 'password' ? '1px solid var(--primary)' : '1px solid #eee', 
-                                    background: '#fff', 
+                                <div style={{
+                                    borderRadius: '12px',
+                                    border: focusedInput === 'password' ? '1px solid var(--primary)' : '1px solid #eee',
+                                    background: '#fff',
                                     transition: 'all 0.2s',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -225,12 +225,12 @@ const Signup = () => {
                                         onBlur={() => setFocusedInput(null)}
                                         style={{ width: '100%', padding: '15px', paddingRight: '45px', borderRadius: '12px', border: 'none', outline: 'none' }}
                                     />
-                                    <div 
+                                    <div
                                         onClick={() => setShowPassword(!showPassword)}
-                                        style={{ 
-                                            position: 'absolute', 
-                                            right: '15px', 
-                                            cursor: 'pointer', 
+                                        style={{
+                                            position: 'absolute',
+                                            right: '15px',
+                                            cursor: 'pointer',
                                             color: '#888',
                                             display: 'flex',
                                             alignItems: 'center',
@@ -253,10 +253,10 @@ const Signup = () => {
                                 type="submit"
                                 className="btn-primary"
                                 disabled={isLoading}
-                                style={{ 
-                                    padding: '15px', 
-                                    fontSize: '16px', 
-                                    borderRadius: '12px', 
+                                style={{
+                                    padding: '15px',
+                                    fontSize: '16px',
+                                    borderRadius: '12px',
                                     boxShadow: '0 10px 20px rgba(255, 82, 0, 0.2)',
                                     opacity: isLoading ? 0.7 : 1,
                                     cursor: isLoading ? 'not-allowed' : 'pointer',
