@@ -21,8 +21,9 @@ const Login = () => {
         setIsLoading(false);
 
         if (result.success) {
-            if (role === 'admin') navigate('/admin');
-            else if (role === 'delivery') navigate('/delivery');
+            const userRole = result.user.role?.toLowerCase();
+            if (userRole === 'admin') navigate('/admin');
+            else if (userRole === 'delivery' || userRole === 'delivery staff') navigate('/delivery');
             else navigate('/');
         } else {
             alert(result.message || 'Login failed');

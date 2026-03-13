@@ -1428,13 +1428,23 @@ const StaffManager = () => {
 
         setLoading(true);
         try {
+            // Map display roles to internal system roles
+            const roleMapping = {
+                'Admin': 'admin',
+                'SubAdmin': 'admin',
+                'Delivery Staff': 'delivery',
+                'Cook staff': 'delivery',
+                'clening staff': 'user'
+            };
+            const internalRole = roleMapping[staffData.role] || 'user';
+
             // Attempt to register staff on the server
             const registerResult = await register({
                 name: `${staffData.name} ${staffData.lastName}`,
                 email: staffData.email,
                 mobile: staffData.mobile,
                 password: staffData.password,
-                role: staffData.role // Pass the chosen staff role
+                role: internalRole // Send internal role to backend
             });
 
             if (registerResult.success) {
@@ -1598,10 +1608,18 @@ const StaffManager = () => {
                                         <span style={{ 
                                             padding: '4px 10px', 
                                             borderRadius: '12px', 
-                                            fontSize: '12px', 
+                                            fontSize: '11px', 
                                             fontWeight: 'bold',
-                                            background: '#e3f2fd',
-                                            color: '#1976d2'
+                                            background: 
+                                                staff.role === 'Admin' ? '#ffebee' : 
+                                                staff.role === 'Delivery Staff' ? '#e3f2fd' : 
+                                                staff.role === 'Cook staff' ? '#e8f5e9' : 
+                                                staff.role === 'clening staff' ? '#f3e5f5' : '#f5f5f5',
+                                            color: 
+                                                staff.role === 'Admin' ? '#c62828' : 
+                                                staff.role === 'Delivery Staff' ? '#1976d2' : 
+                                                staff.role === 'Cook staff' ? '#2e7d32' : 
+                                                staff.role === 'clening staff' ? '#7b1fa2' : '#666'
                                         }}>
                                             {staff.role}
                                         </span>

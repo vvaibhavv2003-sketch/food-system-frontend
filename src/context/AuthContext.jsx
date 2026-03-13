@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
             if (res.ok) {
                 setUser(data);
                 localStorage.setItem('toastyUser', JSON.stringify(data));
-                return { success: true };
+                return { success: true, user: data };
             } else {
                 return { success: false, message: data.message };
             }
