@@ -7,17 +7,22 @@ import './ReservationSection.css';
 
 const ReservationSection = () => {
     const { user } = useAuth();
+    
+    // Default to today in YYYY-MM-DD format
+    const getTodayDate = () => new Date().toISOString().split('T')[0];
+
     const [formData, setFormData] = useState({
         name: user?.name || '',
         email: user?.email || '',
         mobile: user?.mobile || '',
-        date: '',
+        date: localStorage.getItem('toasty_reserve_date') || getTodayDate(),
         guests: '2 People',
         time: '',
         tableNumber: null
     });
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [statusLoading, setStatusLoading] = useState(true);
 
     // Sync user data if login state changes
     useEffect(() => {
@@ -31,15 +36,21 @@ const ReservationSection = () => {
         }
     }, [user]);
 
+    // Persist date selection
     useEffect(() => {
+        localStorage.setItem('toasty_reserve_date', formData.date);
         fetchStatuses();
+    }, [formData.date]);
+
+    useEffect(() => {
         const interval = setInterval(fetchStatuses, 15000); // Poll every 15s
         return () => clearInterval(interval);
     }, [formData.date]);
 
     const fetchStatuses = async () => {
         try {
-            const dateStr = formData.date || new Date().toISOString().split('T')[0];
+            setStatusLoading(true);
+            const dateStr = formData.date || getTodayDate();
             const res = await fetch(API_BOOKINGS_STATUS(dateStr));
             if (!res.ok) throw new Error('Failed to fetch status');
             const data = await res.json();
@@ -48,14 +59,16 @@ const ReservationSection = () => {
             }
         } catch (error) {
             console.error('Error fetching table statuses:', error);
+            // Default 12 tables only if we have NO data at all
             if (tables.length === 0) {
-                // Default 12 tables only if we have NO data at all
                 const defaultTables = Array.from({ length: 12 }, (_, i) => ({
                     number: i + 1,
                     status: 'Available'
                 }));
                 setTables(defaultTables);
             }
+        } finally {
+            setStatusLoading(false);
         }
     };
 
@@ -160,7 +173,12 @@ const ReservationSection = () => {
 
                     <div style={{ marginBottom: '40px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
-                            <h4 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)' }}>Select Your Table</h4>
+                            <div>
+                                <h4 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)', margin: 0 }}>Select Your Table</h4>
+                                <p style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', margin: '4px 0 0' }}>
+                                    Viewing status for: <span style={{ textDecoration: 'underline' }}>{new Date(formData.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                                </p>
+                            </div>
                             <div style={{ display: 'flex', gap: '15px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '600' }}>
                                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#4caf50', boxShadow: '0 0 8px rgba(76, 175, 80, 0.4)' }}></div>
@@ -177,7 +195,7 @@ const ReservationSection = () => {
                             </div>
                         </div>
 
-                        <div className="reservation-table-grid">
+                        <div className="reservation-table-grid" style={{ opacity: statusLoading ? 0.6 : 1, transition: 'opacity 0.3s ease' }}>
                             {tables.map(table => {
                                 const isSelected = formData.tableNumber === table.number;
                                 return (

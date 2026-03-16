@@ -2021,19 +2021,20 @@ const OfferItemManager = ({ offer, onUpdate }) => {
 };
 
 const BookingManager = () => {
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         fetchBookings();
-        const interval = setInterval(fetchBookings, 10000);
+        const interval = setInterval(fetchBookings, 15000);
         return () => clearInterval(interval);
-    }, []);
+    }, [selectedDate]);
 
     const fetchBookings = async () => {
         try {
-            const today = new Date().toISOString().split('T')[0];
-            const res = await fetch(API_BOOKINGS_STATUS(today));
+            setLoading(true);
+            const res = await fetch(API_BOOKINGS_STATUS(selectedDate));
             const data = await res.json();
             setBookings(data || []);
         } catch (error) {
@@ -2048,7 +2049,7 @@ const BookingManager = () => {
             const res = await fetch(API_BOOKING_STATUS_TABLE(tableNumber), {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: newStatus })
+                body: JSON.stringify({ status: newStatus, date: selectedDate })
             });
             const data = await res.json();
             if (res.ok) {
@@ -2064,7 +2065,18 @@ const BookingManager = () => {
 
     return (
         <div className="admin-main-card" style={{ padding: '20px', background: '#fff', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '24px' }}>Table Booking Manager</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', flexWrap: 'wrap', gap: '15px' }}>
+                <h2 style={{ fontSize: '24px', fontWeight: '800', margin: 0 }}>Table Booking Manager</h2>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <label style={{ fontSize: '14px', fontWeight: '600', color: '#666' }}>Select Date:</label>
+                    <input 
+                        type="date" 
+                        value={selectedDate} 
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        style={{ ...inputStyle, width: 'auto', padding: '8px 12px' }}
+                    />
+                </div>
+            </div>
 
             {loading ? (
                 <p>Loading table statuses...</p>
